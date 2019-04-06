@@ -1,0 +1,235 @@
+#!/usr/bin/python
+#@not-modified@
+# Remove the above line if this file has been modified.
+# If you don't, this file will be overwritten.
+
+# Copyright (c) Oskar Skog, 2016-2019
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1.  Redistributions of source code must retain the above copyright notice,
+#     this list of conditions and the following disclaimer.
+#
+# 2.  Redistributions in binary form must reproduce the above copyright notice,
+#     this list of conditions and the following disclaimer in the documentation
+#     and/or other materials provided with the distribution.
+#
+# This software is provided by the copyright holders and contributors "as is"
+# and any express or implied warranties, including, but not limited to, the
+# implied warranties of merchantability and fitness for a particular purpose
+# are disclaimed. In no event shall the copyright holder or contributors be
+# liable for any direct, indirect, incidental, special, exemplary, or
+# consequential damages (including, but not limited to, procurement of
+# substitute goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether in
+# contract, strict liability, or tort (including negligence or otherwise)
+# arising in any way out of the use of this software, even if advised of the
+# possibility of such damage.
+
+# NOTICE:
+# The keys (the format) may change when you update the game.  If that
+# happens, the configuration files need to be replaced for the game to
+# function.  Any modification would need to be remade, so keep a
+# backup.
+#
+# Installing a new version when the configuration format has changed
+# requires replacing the system-wide configuration files.
+#
+# BUG: As of version 0.0.5, the user's own configuration have a higher
+# priority and will be loaded if available.  If they are out of date,
+# the game will crash.
+
+
+{
+    'curses-mouse-input': {
+        # BUTTON1 = Left
+        # BUTTON3 = Right
+        'interval':     0,  # Maximum time between PRESSED and RELEASED in
+                            # order to count the two as a CLICK.
+                            # A high value requires waiting between presses
+                            # and releases, so set it to zero if you don't
+                            # intend to use BUTTONn_CLICKED.  Default: 200
+        'flag':         [curses.BUTTON3_PRESSED,   ],
+        'reveal':       [curses.BUTTON1_RELEASED,  ],
+    },
+    'curses-input': {
+        # Key bindings:
+        # Only ASCII characters are supported in the key bindings.
+        # (3 = ^C and 459 = numpad enter on Windows)
+        'quit':                 ['q', 3,              ],
+        'flag':                 ['f',                 ],
+        'reveal':               [' ', '\n', '\r', 459,],
+        'toggle-attention':     ['!', '?',            ],
+        # Hexagonal direction numbers:
+        #  5 0
+        # 4   1
+        #  3 2
+        'hex0':     ['u', '9', 'e', ],
+        'hex1':     ['l', '6', 'd', ],
+        'hex2':     ['n', '3', 'x', ],
+        'hex3':     ['b', '1', 'z', ],
+        'hex4':     ['h', '4', 'a', ],
+        'hex5':     ['y', '7', 'w', ],
+        # Neumann and Moore neighbourhood directions:
+        # NW    up      NE
+        # left          right
+        # SW    down    SE
+        'up':    ['k', 'w', '8', curses.KEY_UP,    ],
+        'right': ['l', 'd', '6', curses.KEY_RIGHT, ],
+        'down':  ['j', 's', '2', curses.KEY_DOWN,  ],
+        'left':  ['h', 'a', '4', curses.KEY_LEFT,  ],
+        'NE':    ['u',      '9', ],
+        'SE':    ['n',      '3', ],
+        'SW':    ['b',      '1', ],
+        'NW':    ['y',      '7', ],
+    },
+    # 'pre-doc':        In-game documentation on the key bindings
+    #                   for flagging and revealing.
+    # 'doc-hex':        In-game documentation on the key bindings
+    #                   for the hexagonal gametype.
+    # 'doc-square':     In-game documentation on the key bindings
+    #                   for the other gametypes.
+    'pre-doc': '''
+    Press f to flag or unflag a cell.  Press space or enter to
+    reveal (click on) a cell.
+    Type ! or ? to find difficult to find cells. Press again to
+    deactivate attention mode.
+    ''',
+    'doc-square': '''
+    In the traditional and von Neumann modes, you can steer with the arrow
+    keys, WASD, the numpad or hjklyubn.  Do not hold down shift.
+    ''',
+    'doc-hex': '''
+    You can also use the mouse, but be careful when clicking near the edge
+    of the terminal.  You can scroll the wheel while hovering over a cell
+    to move the "cell pointer" there, I'd suggest you do this at the edges.
+    
+    This mode lacks an obvious up or down.
+     w e        y u        7 9
+    a   d      h   l      4   6
+     z x        b n        1 3
+    Do not hold down shift.
+    ''',
+    'curses-output': {
+        # Textics
+        # =======
+        #
+        # 'key': ('C', 'foreground', 'background', attributes),
+        
+        # Keys
+        # ----
+        #
+        # These keys consist of two parts:
+        #       * the property (mandatory)
+        #       * the mode (optional)
+        # 'property'
+        # 'property:mode'
+        # The mode-part is used to give different gametypes different
+        # values for a property.
+        # Recognised properties are:
+        #       'hex'           Only for hexagonal fields.
+        #       'moore'         Only for traditional fields.
+        #       'neumann'       Only for fields with von Neumann
+        #                       neighbourhoods.
+        #       'square'        'moore' + 'neumann'
+        #       no mode         Used when the preferred mode is
+        #                       unavailable.
+        # Search order:
+        # von Neumann fields:   ':neumann',     ':square',      ''
+        # hexagonal fields:     ':hex',         ''
+        # traditional fields:   ':moore',       ':square',      ''
+        #
+        # Properties:
+        #       '1', '2', '3', '4', '5', '6', '7', '8'
+        #       'flag'
+        #       'free'          (unclicked)
+        #       'attention'     free cell when in attention mode or a number
+        #                       with too many surrounding flags (the number
+        #                       will override the character.)
+        #       'number'        if not overridden by one of the digits
+        #       'zero'          (no mines around this cell)
+        #       'mine'          (game over; don't click on these)
+        #   **  'grid'          (The space between the characters of each cell)
+        #   **  'cursor-l'      (Mark the position of the selected cell)
+        #       'cursor-r'      (Mark the position of the selected cell)
+        #   **  'text'          (All messages that appear in curses mode
+        #                       and the flags left text)
+        #   **  'background'    (To differ from the grid.)
+        #
+        
+        # Values
+        # ------
+        #
+        # The values are tuples of:
+        # [0]:  character (Required by all keys except 'number', 'grid',
+        #       'text' and 'background'. For these three, the character
+        #       will be ignored. ('background' is ignored due to a bug.))
+        #       * Non-ASCII characters are supported in Python 3, but not in
+        #       Python 2.  See http://bugs.python.org/issue18118
+        #       * Only one column wide characters are supported.  Characters
+        #       that take up multiple columns are not supported.
+        # [1]:  foreground color; valid colors are: "BLACK", "BLUE",
+        #       "GREEN", "CYAN", "RED", "MAGENTA", "YELLOW" and
+        #       "WHITE".
+        # [2]:  background color; (same valid colors as for foreground)
+        # [3]:  attributes; this is curses attributes or'ed together,
+        #       see link below for a table of common attributes:
+        # https://docs.python.org/3/howto/curses.html#attributes-and-color
+        #       To or together blinking and bright/bold text use:
+        #               curses.A_BLINK | curses.A_BOLD
+        #       as attribute.  The pipe character is the or operator.
+        #       NOTICE: The effects of the attributes will vary between
+        #       different terminals:
+        #               - curses.A_BOLD may or may not make the background
+        #               color brighter.  And as the name suggests, some
+        #               terminals may use a bolder font instead.
+        #               - curses.A_BLINK is not always supported and on
+        #               the Linux virtual consoles (tty1 to tty6) it does
+        #               something with the color.
+        
+       #                         foreground           attributes
+       #key                character        background
+        'text':           (None, "BLACK",   "WHITE",  curses.A_NORMAL),
+        'flag':           ('F',  "GREEN",   "BLACK",  curses.A_REVERSE|curses.A_DIM),
+        'free':           ('.',  "BLACK",   "BLACK",  curses.A_NORMAL),
+        'attention':      ('.',  "WHITE",   "BLACK",  curses.A_REVERSE|curses.A_BOLD|curses.A_BLINK),
+        '1:square':       ('1',  "YELLOW",  "BLACK",  curses.A_BOLD),
+        '2:square':       ('2',  "RED",     "BLACK",  curses.A_BOLD),
+        '3:square':       ('3',  "CYAN",    "BLACK",  curses.A_BOLD),
+        '4:square':       ('4',  "WHITE",   "BLACK",  curses.A_NORMAL),
+        '5:moore':        ('5',  "WHITE",   "BLACK",  curses.A_BOLD),
+        '6:moore':        ('6',  "GREEN",   "BLACK",  curses.A_BOLD),
+        '7:moore':        ('7',  "MAGENTA", "BLACK",  curses.A_BOLD),
+        '8:moore':        ('8',  "WHITE",   "BLUE",   curses.A_BLINK),
+        'zero':           ('-',  "WHITE",   "BLACK",  curses.A_DIM),
+        'mine':           ('X',  "RED",     "BLACK",  curses.A_REVERSE|curses.A_BOLD),
+        'cursor-l':       ('>',  "WHITE",   "BLACK",  curses.A_BOLD),
+        'cursor-r':       ('<',  "WHITE",   "BLACK",  curses.A_BOLD),
+        'grid':           (' ',  "WHITE",   "BLACK",  curses.A_NORMAL),
+        'background':     (None, "BLACK",   "BLUE",   curses.A_NORMAL),
+        'flag:hex':       ('F',  "RED",     "BLACK",  curses.A_REVERSE),
+        'free:hex':       ('.',  "RED",     "RED",    curses.A_NORMAL),
+        '1:hex':          ('1',  "WHITE",   "RED",    curses.A_BOLD),
+        '2:hex':          ('2',  "MAGENTA", "RED",    curses.A_BOLD),
+        '3:hex':          ('3',  "YELLOW",  "RED",    curses.A_BOLD),
+        '4:hex':          ('4',  "WHITE",   "RED",    curses.A_BOLD),
+        '5:hex':          ('5',  "WHITE",   "RED",    curses.A_NORMAL),
+        '6:hex':          ('6',  "WHITE",   "RED",    curses.A_BLINK),
+        'zero:hex':       ('-',  "YELLOW",  "RED",    curses.A_BOLD),
+        'mine:hex':       ('X',  "RED",     "BLACK",  curses.A_REVERSE),
+        'cursor-l:hex':   ('*',  "WHITE",   "RED",    curses.A_BOLD),
+        'cursor-r:hex':   ('*',  "WHITE",   "RED",    curses.A_BOLD),
+        'grid:hex':       (None, "BLACK",   "RED",    curses.A_NORMAL),
+        'background:hex': (None, "BLACK",   "RED",    curses.A_NORMAL),
+    },
+    'highscores': {
+        'tabsize':      6,      # Tab size for the highscores
+        'min_tabspace': 2,      # Minimum amount of spaces in a tab.
+        'less_step':    3,      # Horizontal step size for less(1).
+        # Real tabs would be: tabsize=8; min_tabspace=1
+        # To separate the columns more clearly: increase `min_tabspace`
+        # High values of `tabsize` can be excessive.
+        # For aesthetic reasons `tabsize` should be divisible by `less_step`.
+    },
+}

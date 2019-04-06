@@ -1,0 +1,18 @@
+I haven't yet figured out how to get it installed on Haiku, but it plays
+acceptably well.
+
+On Haiku nighlty hrev < 50662, the screen may look like gibberish.  Use
+TERM=vt100 on Haiku versions older than 50662.
+
+(Tested on Haiku nightly build hrev50483 and hrev50700.)
+
+To "install" it
+> git clone https://gitlab.com/oskog97/anonymine
+> cd anonymine
+> touch highscores
+> ./mkenginecfg python ./ ./ highscores
+
+To play it
+> cd anonymine
+> python anonymine.py -c cursescfg -e enginecfg.out
+

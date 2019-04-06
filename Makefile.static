@@ -1,0 +1,364 @@
+
+##############################################################################
+#                                                                            #
+#                                  Makefile                                  #
+#                                  ========                                  #
+#                                                                            #
+##############################################################################
+
+
+# No quotes for these four:
+# NAME = [technical] name
+# NAME_C = Capitalized name (human name)
+# DESCRIPTION =
+# VERSION = x.y.z
+NAME := anonymine
+NAME_C := Anonymine
+DESCRIPTION = Minesweeper without guessing
+VERSION := 0.5.7
+
+# Four more variables are required: sysconfdir, vargamesdir, EXECUTABLES and
+# MODULES
+# They will be prepended to the actual Makefile by the "configure" script.
+
+# srcdir, builddir and DESTDIR may also be prepended by the "configure"
+# script.
+
+# freedesktop == "" if not freedesktop.org DE.
+# macosx == "" if not on Mac OS X.
+
+# See "INSTALL".
+
+# Define these to prevent bugs on certain platforms.
+PRE_INSTALL = true
+NORMAL_INSTALL = true
+POST_INSTALL = true
+PRE_UNINSTALL = true
+NORMAL_UNINSTALL = true
+POST_UNINSTALL = true
+
+
+##############################################################################
+#                                                                            #
+#                          all (build) & clean                               #
+#                                                                            #
+##############################################################################
+
+
+verbose ?= true
+info := test "$(verbose)" != true || >&2 echo '//'
+
+
+# Desktop specific prefixes:
+# FD_	freedesktop.org
+# OSX_	Mac OS X
+
+MAIN_SRC := $(srcdir)$(NAME).py
+MAIN_STAGE := $(builddir)$(NAME)
+MAIN_DEST := $(DESTDIR)$(EXECUTABLES)/$(NAME)
+
+CFG_DIR := $(DESTDIR)$(sysconfdir)/$(NAME)
+
+MAIN_STAGE_SED1 := s/MAKEFILE_GAME_VERSION/$(VERSION)/
+SED_CFGDIR := `echo $(CFG_DIR) | sed -e 's/\\//\\\\\\//g'`
+MAIN_STAGE_SED2 := s/MAKEFILE_CFGDIR/$(SED_CFGDIR)/
+
+HISCORE_FILE := $(DESTDIR)$(vargamesdir)/anonymine
+ENGINECFG_STAGE := $(builddir)enginecfg.out
+
+# freedesktop.org, see desktop/README
+FD_MK_DESKTOP := $(srcdir)desktop/desktop.sh
+FD_DESKTOP_STAGE := $(builddir)$(NAME).desktop
+FD_DESKTOP_DEST := $(DESTDIR)$(prefix)/share/applications/$(NAME).desktop
+
+# Mac OS X, see desktop/README
+OSX_WRAPPER := $(builddir)$(NAME)-wrapper
+OSX_INFO_PLIST := $(builddir)Info.plist
+OSX_MK_INFO_PLIST := $(srcdir)desktop/Info.plist.py
+OSX_ICON := $(builddir)icon.icns
+OSX_MK_ICON := $(srcdir)desktop/icon.icns.py
+
+
+# make clean
+ALL_STAGE := "$(MAIN_STAGE)" "$(OSX_WRAPPER)" "$(OSX_INFO_PLIST)" \
+	"$(OSX_ICON)" "$(builddir)check.py" "$(FD_DESKTOP_STAGE)" \
+	"$(ENGINECFG_STAGE)" "$(builddir)mkenginecfg.py" \
+	"$(builddir)module-symlinks"
+
+all : $(builddir)Makefile FORCE
+	@cd "$(builddir)" && $(MAKE) _all >/dev/null
+_all : $(MAIN_STAGE) $(ENGINECFG_STAGE) $(builddir)module-symlinks
+	@if "$(freedesktop)"; then \
+		cd "$(builddir)" && $(MAKE) build-freedesktop >/dev/null; \
+	fi
+	@if "$(macosx)"; then \
+		cd "$(builddir)" && $(MAKE) build-macosx >/dev/null; \
+	fi
+
+
+$(builddir)Makefile : $(builddir)Makefile.vars $(srcdir)Makefile.static
+	@$(info) 'Recreating Makefile'
+	@cat "$(builddir)Makefile.vars" "$(srcdir)Makefile.static" \
+		>"$(builddir)Makefile"
+
+$(builddir)Makefile.vars : $(srcdir)configure $(srcdir)configure.py
+	@$(info) 'Reconfiguring...'
+	@cd "$(builddir)" && ./reconfigure
+
+
+$(MAIN_STAGE) : $(MAIN_SRC) $(builddir)Makefile
+	@$(info) 'Creating the appropriate shebang line'
+	@echo "#!$(python)" > "$(MAIN_STAGE)"
+	@sed -e "$(MAIN_STAGE_SED1)" "$(MAIN_SRC)" \
+		| sed -e "$(MAIN_STAGE_SED2)" >> "$(MAIN_STAGE)"
+
+
+$(ENGINECFG_STAGE) : $(srcdir)mkenginecfg $(builddir)Makefile.vars
+	@$(info) 'Making enginecfg: mostly counting processors'
+	@"$(srcdir)mkenginecfg" "$(python)" "$(srcdir)" "$(builddir)" "$(HISCORE_FILE)"
+
+
+$(builddir)module-symlinks : $(builddir)Makefile.vars $(srcdir)mk-symlinks
+	@$(python) "$(srcdir)mk-symlinks" "$(srcdir)" "$(prefix)" "$(libdir)" \
+		"$(MODULES)" "$(DESTDIR)" "$(builddir)"
+
+
+build-freedesktop : $(FD_DESKTOP_STAGE)
+	@: # Refer to desktop/README for information about the following.
+	@$(info) 'freedesktop.org stuff created'
+$(FD_DESKTOP_STAGE) : $(FD_MK_DESKTOP) $(builddir)Makefile
+	@"$(FD_MK_DESKTOP)" "$(FD_DESKTOP_STAGE)" $(NAME) "$(NAME_C)" \
+		"$(DESCRIPTION) -- version $(VERSION)"
+
+build-macosx : $(OSX_WRAPPER) $(OSX_INFO_PLIST) $(OSX_ICON)
+	@: # Refer to desktop/README for information about the following.
+	@$(info) 'Mac OS X stuff created'
+$(OSX_WRAPPER) : $(builddir)Makefile
+	@echo '#!/bin/sh' > "$(OSX_WRAPPER)"
+	@echo 'open -b com.apple.terminal' "$(MAIN_DEST)" >> "$(OSX_WRAPPER)"
+$(OSX_INFO_PLIST) : $(OSX_MK_INFO_PLIST) $(builddir)Makefile
+	@$(python) "$(OSX_MK_INFO_PLIST)" "$(OSX_INFO_PLIST)" "$(NAME_C)" \
+		"$(NAME_C) - $(DESCRIPTION)" $(VERSION) $(NAME)
+$(OSX_ICON) : $(srcdir)/desktop/$(NAME)*.png $(OSX_MK_ICON) $(builddir)Makefile
+	@$(python) "$(OSX_MK_ICON)" "$(OSX_ICON)" "$(srcdir)desktop/$(NAME)"
+
+
+
+clean : $(builddir)Makefile FORCE
+	@cd "$(builddir)" && $(MAKE) _clean >/dev/null
+_clean : FORCE
+	@rm $(ALL_STAGE) 2> /dev/null || true
+	@: # Remove the bytecode files.
+	@rm -- "$(srcdir)"*.pyc 2> /dev/null || true
+	@rm -r -- "$(srcdir)"__pycache__/ 2> /dev/null || true
+
+
+distclean : $(builddir)Makefile FORCE
+	@cd "$(builddir)" && $(MAKE) _distclean >/dev/null
+_distclean : _clean
+	@rm "$(builddir)Makefile"
+	@rm "$(builddir)Makefile.vars"
+	@rm "$(builddir)reconfigure"
+
+
+##############################################################################
+#                                                                            #
+#                install, unininstall & print-destinations                   #
+#                                                                            #
+##############################################################################
+
+
+# configure.py will choose /usr/ucb/install on Solares.
+INSTALL ?= install
+
+INSTALL_CFG := $(python) "$(srcdir)install-cfg" "$(INSTALL)"
+
+# Modules: FOO_SRC, FOO_DEST
+ENGINE_SRC := $(srcdir)$(NAME)_engine.py
+ENGINE_DEST := $(DESTDIR)$(MODULES)/$(NAME)_engine.py
+SOLVER_SRC := $(srcdir)$(NAME)_solver.py
+SOLVER_DEST := $(DESTDIR)$(MODULES)/$(NAME)_solver.py
+FIELDS_SRC := $(srcdir)$(NAME)_fields.py
+FIELDS_DEST := $(DESTDIR)$(MODULES)/$(NAME)_fields.py
+
+# See desktop/README
+# $$size would work in gmake while $$$$size would work in BSD make.
+# Neither works in both.
+FD_ICON_SRC16 := $(srcdir)desktop/$(NAME)-16x16.png
+FD_ICON_DESTDIR16 := $(DESTDIR)$(prefix)/share/icons/hicolor/16x16/apps
+FD_ICON_DEST16 := $(FD_ICON_DESTDIR16)/$(NAME).png
+FD_ICON_SRC32 := $(srcdir)desktop/$(NAME)-32x32.png
+FD_ICON_DESTDIR32 := $(DESTDIR)$(prefix)/share/icons/hicolor/32x32/apps
+FD_ICON_DEST32 := $(FD_ICON_DESTDIR32)/$(NAME).png
+FD_ICON_SRC64 := $(srcdir)desktop/$(NAME)-64x64.png
+FD_ICON_DESTDIR64 := $(DESTDIR)$(prefix)/share/icons/hicolor/64x64/apps
+FD_ICON_DEST64 := $(FD_ICON_DESTDIR64)/$(NAME).png
+FD_ICON_SRC256 := $(srcdir)desktop/$(NAME)-256x256.png
+FD_ICON_DESTDIR256 := $(DESTDIR)$(prefix)/share/icons/hicolor/256x256/apps
+FD_ICON_DEST256 := $(FD_ICON_DESTDIR256)/$(NAME).png
+
+# See desktop/README
+BUNDLE := $(DESTDIR)/Applications/$(NAME_C).app
+
+check-install-cfg : $(builddir)Makefile FORCE
+	@cd "$(builddir)" && $(MAKE) _check-install-cfg >/dev/null
+_check-install-cfg : FORCE
+	@$(PRE_INSTALL)
+	@: # Cause installation to fail if the configuration is incompatible.
+	@$(info) 'Installing or checking configuration'
+	@: # Install the directory for the configuration files as install-dirs
+	@: # might not have been run yet.
+	@mkdir -p "$(CFG_DIR)"
+	@$(INSTALL_CFG) "$(srcdir)cursescfg" "$(CFG_DIR)/cursescfg" $(verbose)
+	@$(INSTALL_CFG) "$(ENGINECFG_STAGE)" "$(CFG_DIR)/enginecfg" $(verbose)
+
+overwrite-cfg : $(builddir)Makefile FORCE
+	@cd "$(builddir)" && $(MAKE) _overwrite-cfg >/dev/null
+_overwrite-cfg: FORCE
+	@$(INSTALL) -m 644 "$(srcdir)cursescfg" "$(CFG_DIR)/cursescfg"
+	@$(INSTALL) -m 644 "$(ENGINECFG_STAGE)" "$(CFG_DIR)/enginecfg"
+	@$(info) "Configuration has been overwritten"
+	@$(info) "All (if any) system-wide modifications are lost"
+
+
+install-dirs : $(builddir)Makefile FORCE
+	@cd "$(builddir)" && $(MAKE) _install-dirs >/dev/null
+_install-dirs : FORCE
+	@$(info) 'Installing directories'
+	@mkdir -p "$(CFG_DIR)" || true
+	@mkdir -p "$(DESTDIR)$(vargamesdir)" || true
+	@mkdir -p "$(DESTDIR)$(EXECUTABLES)" || true
+	@mkdir -p "$(DESTDIR)$(MODULES)" || true
+	@if "$(freedesktop)"; then \
+		mkdir -p "$(DESTDIR)$(prefix)/share/applications" || true; \
+		mkdir -p "$(DESTDIR)$(prefix)/share/pixmaps" || true; \
+	fi
+	@if "$(macosx)"; then \
+		$(INSTALL) -d "$(BUNDLE)/Contents"; \
+		$(INSTALL) -d "$(BUNDLE)/Contents/MacOS"; \
+		$(INSTALL) -d "$(BUNDLE)/Contents/Resources"; \
+	fi
+
+install : $(builddir)Makefile FORCE
+	@cd "$(builddir)" && $(MAKE) _install >/dev/null
+_install : _all _check-install-cfg _install-dirs
+	@$(NORMAL_INSTALL)
+	@: # When the configuration has been installed, install the main
+	@: # program, and then the modules for both versions of Python.
+	@$(info) 'Installing executable and modules'
+	@$(INSTALL) -m 755 "$(MAIN_STAGE)" "$(MAIN_DEST)"
+	@$(INSTALL) -m 644 "$(ENGINE_SRC)" "$(ENGINE_DEST)"
+	@$(INSTALL) -m 644 "$(SOLVER_SRC)" "$(SOLVER_DEST)"
+	@$(INSTALL) -m 644 "$(FIELDS_SRC)" "$(FIELDS_DEST)"
+	@: # Create highscore file unless it already exists.
+	@touch "$(HISCORE_FILE)"
+	@chmod 666 "$(HISCORE_FILE)"
+	@if "$(freedesktop)"; then \
+		$(info) 'Installing icons and .desktop (NORMAL_INSTALL)'; \
+		$(INSTALL) -m 644 "$(FD_DESKTOP_STAGE)" "$(FD_DESKTOP_DEST)"; \
+		$(INSTALL) -d "$(FD_ICON_DESTDIR16)"; \
+		$(INSTALL) -m 644 "$(FD_ICON_SRC16)" "$(FD_ICON_DEST16)"; \
+		$(INSTALL) -d "$(FD_ICON_DESTDIR32)"; \
+		$(INSTALL) -m 644 "$(FD_ICON_SRC32)" "$(FD_ICON_DEST32)"; \
+		$(INSTALL) -d "$(FD_ICON_DESTDIR64)"; \
+		$(INSTALL) -m 644 "$(FD_ICON_SRC64)" "$(FD_ICON_DEST64)"; \
+		$(INSTALL) -d "$(FD_ICON_DESTDIR256)"; \
+		$(INSTALL) -m 644 "$(FD_ICON_SRC256)" "$(FD_ICON_DEST256)"; \
+	fi
+	@if "$(macosx)"; then \
+		$(info) 'Installing app/bundle'; \
+		$(INSTALL) -m 644 "$(OSX_INFO_PLIST)" \
+			"$(BUNDLE)/Contents/Info.plist"; \
+		$(INSTALL) -m 755 "$(OSX_WRAPPER)" \
+			"$(BUNDLE)/Contents/MacOS/$(NAME)-wrapper"; \
+		$(INSTALL) -m 644 "$(OSX_ICON)" \
+			"$(BUNDLE)/Contents/Resources/icon.icns"; \
+	fi
+	@$(POST_INSTALL)
+	@if "$(freedesktop)"; then \
+		$(info) 'Installing icons and .desktop (POST_INSTALL)'; \
+		xdg-desktop-menu install --novendor --mode system \
+			"$(FD_DESKTOP_DEST)" || true; \
+	fi
+
+uninstall: $(builddir)Makefile FORCE
+	@cd "$(builddir)" && $(MAKE) _uninstall >/dev/null
+_uninstall: FORCE
+	@$(PRE_UNINSTALL)
+	@if "$(freedesktop)"; then \
+		xdg-desktop-menu uninstall --novendor --mode system \
+			"$(FD_DESKTOP_DEST)" || true; \
+	fi
+	@$(NORMAL_UNINSTALL)
+	@-rm -r "$(CFG_DIR)"
+	@-rm "$(ENGINE_DEST)" "$(SOLVER_DEST)" "$(FIELDS_DEST)" "$(MAIN_DEST)"
+	@-rm "$(HISCORE_FILE)"
+	@if "$(freedesktop)"; then \
+		rm "$(FD_DESKTOP_DEST)" || true; \
+		for size in $(FD_ICON_SIZES); do \
+			rm "$(FD_ICON_DEST)" || true; \
+		done; \
+	fi
+	@if "$(macosx)"; then \
+		rm -r "$(BUNDLE)" || true; \
+	fi
+
+print-destinations : $(builddir)Makefile FORCE
+	@cd "$(builddir)" && $(MAKE) _print-destinations >/dev/null
+_print-destinations : FORCE
+	@echo >&2 "Main program:          $(MAIN_DEST)"
+	@echo >&2 "Engine module:         $(ENGINE_DEST)"
+	@echo >&2 "Solver module:         $(SOLVER_DEST)"
+	@echo >&2 "Fields module:         $(FIELDS_DEST)"
+	@echo >&2 "Configuration files:   $(CFG_DIR) (directory)"
+	@echo >&2 "Highscores file:       $(HISCORE_FILE)"
+	@if "$(freedesktop)"; then \
+		echo >&2 "[freedesktop.org] .desktop: $(FD_DESKTOP_DEST)"; \
+		echo >&2 "[freedesktop.org] Icon:     $(FD_ICON_DEST16)"; \
+		echo >&2 "[freedesktop.org] Icon:     $(FD_ICON_DEST32)"; \
+		echo >&2 "[freedesktop.org] Icon:     $(FD_ICON_DEST64)"; \
+		echo >&2 "[freedesktop.org] Icon:     $(FD_ICON_DEST256)"; \
+	fi
+	@if "$(macosx)"; then \
+		echo >&2 "[Mac OS X] Bundle (App): $(BUNDLE) (directory)"; \
+	fi
+
+
+##############################################################################
+#                                                                            #
+#                          check, dist & release                             #
+#                                                                            #
+##############################################################################
+
+
+PKG := $(NAME)-$(VERSION)
+
+
+test : $(builddir)Makefile FORCE
+	@cd "$(builddir)" && $(MAKE) _check >/dev/null
+check : $(builddir)Makefile FORCE
+	@cd "$(builddir)" && $(MAKE) _check >/dev/null
+_check : FORCE
+	@$(info) "Checking that it works on both snakes... May take a while!"
+	@$(srcdir)check.sh "$(srcdir)" "$(builddir)"
+
+dist : $(builddir)Makefile FORCE
+	@cd "$(builddir)" && $(MAKE) _dist >/dev/null
+_dist : FORCE
+	@$(info) "Building tarballs..."
+	@$(srcdir)mkdist "$(srcdir)" "$(builddir)" "$(PKG)"
+
+release : $(builddir)Makefile FORCE
+	@cd "$(builddir)" && $(MAKE) _release >/dev/null
+_release : dist check
+	@cp -t ~www-data/archive/"$(NAME)/" "$(PKG).tar.gz" \
+		|| echo You are not me.
+	@cp -t ~www-data/archive/"$(NAME)/" "$(PKG).tar.xz" \
+		|| echo You are not me.
+
+
+##############################################################################
+##############################################################################
+
+FORCE:
+

@@ -1,0 +1,335 @@
+DEPENDENCIES
+============
+
+    Required
+    ========
+    
+        * Python 2.6, 2.7 or 3.x
+        * The curses module. (Python bindings for curses.)
+        * A screen size of at least 10 columns by 8 rows.
+          (7 by 4 for non-hexagonal gametypes.)
+        * A unix-like operating system or the argparse module.
+    
+    Recommended
+    ===========
+    
+        * less(1) for the passwords is recommended.
+        * A unix-like OS is recommended for systems with a multicore CPU
+        * PyPy or another faster Python implementation can be used.
+    
+    NOTICE: Normal installation will only work on unix-like operating
+    systems.
+    
+    On non unix-like systems you must specify the location of both
+    configuration files, which is why the argparse module would
+    be required on a non-nix platform.
+    
+
+Mac OS X
+========
+
+    NOTICE:  This has not been tested.  Please report any issues to
+    oskar.skog.finland@gmail.com
+    
+    You need to install as admin.
+    You also need to have parts of Xcode installed, I believe they will
+    automatically install on recent enough versions of OS X.
+    
+    Download and extract the archive and open a terminal window and
+    navigate to the extracted directory with the `cd` command.
+    
+        cd Downloads/anonymine-*
+    
+    See this site for more information:
+https://www.macworld.co.uk/feature/mac-software/how-use-terminal-on-mac-3608274/
+    
+    Then run the commands:
+        ./configure -v
+        make
+        sudo make install
+    
+
+INSTALLATION
+============
+
+    NOTICE: This section only applies to unix-like systems.
+    
+    In the directory extracted from the tarball, run:
+        ./configure
+        make
+        make install        # as root
+    
+    If you don't understand the above, go read
+http://www.makeuseof.com/tag/compile-install-tar-gz-tar-bz2-files-ubuntu-linux/
+    If you still don't understand, ask the nearest Linux user to help you
+    and create a wiki page about the topic on my Gitlab repo.
+    
+    Use "./configure -v" to make the whole installation process verbose.
+    
+    The Makefile works with both GNU's make and BSD's make, but it does not
+    work on Sun's make.  If `make` doesn't work, try using `gmake` instead.
+    
+    NOTICE:
+        The system-wide configuration files for the game will only be created
+        if they do not exist or if they have not been modified by the user.
+        `make install` will fail if the format of the configuration has
+        changed and incompatible configuration files that have been modified
+        exist.
+        
+        If you don't modify the system-wide configuration files, installation
+        will not fail because of this.
+        
+        To force an overwrite of the system-wide configuration files, run
+        `make overwrite-cfg`.  If you do this because of a failed make install,
+        run make install again.
+    
+    
+    Anonymine will be installed as 'anonymine'.
+    
+    Run "make print-destinations" to find out where files will be installed.
+    
+    
+    Important notes
+    ===============
+    
+        * System wide configuration files, even if altered, will be deleted
+          on uninstall.
+        * The highscores file will be deleted on uninstall.
+        * Anonymine expects to be run by "python", not "python2.7" etc.
+        * Do not make any target that is not listed in the list of Makefile
+          targets.  If you know what you're doing, it's okay.
+        * ./configure and Makefile are not made with the GNU Autotools.
+          The build system may behave unexpectedly.
+
+
+Advanced installation
+=====================
+
+    NOTICE: This section only applies to unix-like systems.
+    
+    
+    ./configure; make; make install
+    ===============================
+    
+        NOTICE: ./configure is not made with GNU Autoconf.
+    
+        ./configure will accept variables with three different syntaxes:
+            ./configure --name value
+            ./configure --name=value
+            ./configure name=value
+        
+        All variables require exactly one value/argument.
+        All variables will also be stored in the Makefile.
+        
+        The value of a variable MAY be a Makefile variable/macro.
+        Ex: `./configure 'bindir=$(prefix)/bin'`
+        
+        You can override the variables stored in Makefile, but avoid
+        overriding srcdir and builddir, those two should only be sent
+        to ./configure.
+        
+        The value entered on the command line will not be pre-expanded in the
+        Makefile, except for "builddir" and "srcdir".  The exception is there
+        to prevent issues when make is run from a different directory than
+        configure.
+            "srcdir" and "builddir" will automatically be converted to absolute
+            paths.
+        
+        configure will also accept these short options:
+            -f      Force; write the Makefile even if there were errors.
+            -v      verbose; this also affects the Makefile
+        
+        The real "configure" script will handle these iff they are the ONLY
+        argument to ./configure:
+            ./configure -h
+            ./configure -V
+            ./configure --help
+            ./configure --version
+    
+    
+    Recognized variables
+    ====================
+    
+        Variable                default and/or description
+        --------                --------------------------
+        
+        prefix                  sys.prefix
+        bindir                  $(prefix)/bin        # NOTE 1
+        gamesdir                $(prefix)/games
+        libdir                  $(prefix)/lib
+        localstatedir           $(prefix)/var, /var
+        sysconfdir              $(prefix)/etc, /etc
+        vargamesdir             $(localstatedir)/games, $(localstatedir)
+        
+        python                  Path to the Python interpreter.
+        
+        EXECUTABLES             This program will be installed in $(gamesdir)
+        MODULES                 See its own subsection
+        
+        INSTALL                 which install(8) utility to use.
+                                (/usr/ucb/install on Solares)
+        
+        DESTDIR                 Pretend the root is here (staged installs)
+        srcdir                  The directory extracted from the tarball.
+        builddir                (Current working directory)
+        
+        freedesktop             'true' or 'false'; "Linux" desktop
+        macosx                  'true' or 'false'; Mac OS X
+        
+
+        NOTE 1: gamesdir, bindir
+            gamesdir will override bindir if possible, so setting bindir
+            might have no effect.
+        
+        prefix, bindir and libdir, localstatedir, sysconfdir:
+            http://www.gnu.org/prep/standards/html_node/Directory-Variables.html
+        
+        sysconfdir
+            Configuration files will be stored in $(sysconfdir)/anonymine/
+        
+        vargamesdir
+            The highscores file is $(vargamesdir)/anonymine
+        
+        python
+            Can be set to use a different version/implementation than what
+            ./configure has chosen automatically.
+        
+        EXECUTABLES
+        ===========
+        
+            This is the directory to which this game will be installed.
+            
+            It will be assigned to the first variable of [gamesdir, bindir]
+            that expands into a path that exists in $PATH.
+            
+            As a consequence: The game will probably not be installed where
+            you want it to if you specify bindir=somewhere-else as it installs
+            to gamesdir rather than bindir whenever possible.
+        
+        
+        MODULES
+        =======
+            
+            This game works with both versions of Python, and installs three
+            modules that could be used by some other program.
+            
+            The modules will be copied to $(MODULES).
+            
+            $(major) and $(minor) are pre-expanded and do NOT exist in the
+            Makefile.
+    
+    
+        srcdir, builddir and DESTDIR
+        ============================
+        
+            srcdir          Directory extracted from the tarball.
+            
+            builddir        Temporary storage;
+                            directory for files from the build process.
+            
+            DESTDIR         Prepended to all paths on install and uninstall;
+                            alternative root.  (For staged installations.)
+            
+            
+            $(srcdir) is the directory that was extracted from the tarball.
+            $(builddir) is the directory where make(1) is allowed to create
+            "temporary" files when building (`make [all]`) the program.
+            
+            Both srcdir and builddir default to the current working directory.
+            
+            Sending builddir=foo to ./configure will create the Makefile
+            inside builddir. You can cd to builddir and run
+            `make && sudo make install` without specifiying any arguments
+            to make.
+            
+            You should only send srcdir and builddir to ./configure, not to
+            make.
+            
+            DESTDIR only affects make install, make uninstall, etc.  It has
+            zero effect on ./configure.
+    
+    
+    Targets in the Makefile
+    =======================
+    
+        NOTICE:  DO NOT attempt to make any other target than what is
+        listed here.  `make` will not remake Makefile if you try to build
+        any other target.
+        
+        all (default)
+            Fix the shebang line of the programs to be installed
+        
+        clean
+            Remove stage files and bytecode.
+        
+        distclean
+            Like clean, but also remove the Makefile.
+            rm $(builddir)Makefile
+        
+        print-destinations
+            Print where things will be installed.
+        
+        install
+            Altered configuration files will not be touched by this target.
+            If the existing configuration file is incompatible but does not
+            identify itself as unmodified, installation will fail and the
+            configuration file must be manually edited.
+        
+        install-dirs
+            Install the destination directories.
+        
+        uninstall
+            This will remove the system-wide configuration files as well.
+            WARNING: This removes the configuration files, even if altered.
+            WARNING: This removed the highscores file.
+        
+        check-install-cfg
+            Install system-wide configuration files, but do not overwrite
+            user-modified files.  This target will fail if the existing
+            configuration files have been modified and are not compatible
+            with the new version of Anonymine.
+        
+        overwrite-cfg
+            Force compatible configuration files to be installed.
+            WARNING: User modified files will be overwritten.
+        
+        check
+            Check that everything seems to work.
+        
+        release
+            (You are me.)
+        
+        make dist
+            'check' that I am not making an embarrassing release,
+            make 'tarballs' and the 'zip' and 'release' them.
+    
+    
+    Multiple Python versions or implementations
+    ===========================================
+    
+        After having run "make", you can run
+        "<python-implementation> symlinks install" in builddir,
+        python-implementation is the command for the python implementation
+        to which you want to install symlinks for the Anonymine modules.
+        
+        The "symlinks" script is generated during "make all".  If you want
+        to use DESTDIR, you'll have to send DESTDIR to either `./configure`
+        or `make`; you can't send it only to `make install`.
+        
+        "<python-implementation> symlinks unintstall" does what you should
+        expect it to do.
+        
+        If the main version (the Python version to which the real files have
+        been installed) has changed, run:
+            ./configure -v # DESTDIR=foo
+            make
+            sudo make install
+            oldpython symlinks install
+            # (You need to install them before you uninstall them.)
+            #oldpython symlinks uninstall
+
+
+TL;DR
+=====
+
+    ./configure -v && make && sudo make install

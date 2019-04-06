@@ -1,0 +1,95 @@
+#!/bin/sh
+
+
+if [ $# -ne 4 ]; then
+cat >&2 <<__EOF__
+# ./mkenginecfg python_interpreter srcdir builddir hiscorefile
+# This shell script is a wrapper around a Python script that will be spit
+# out.
+__EOF__
+exit 1
+fi
+
+python=$1
+srcdir=$2
+builddir=$3
+hiscorefile=$4
+
+userfile="${builddir}enginecfg.user"
+fallbackfile="${srcdir}enginecfg.fallback"
+outfile="${builddir}enginecfg.out"
+
+pyfile="${builddir}mkenginecfg.py"
+
+# Allow user to override.
+if [ -f "$userfile" ]; then
+    cp "$userfile" "$outfile"
+    exit 0
+fi
+
+cat > "$pyfile" << __EOF__
+import sys
+
+def main():
+    try:
+        cpus = int(sys.argv[1])
+        assert cpus >= 1
+    except:
+        sys.stderr.write(
+            'Do you really have {} processors?\n'.format(sys.argv[1])
+        )
+        cpus = 1
+    procs = int(0.83 * cpus + 0.5)
+    
+    hiscorefile = sys.argv[2]
+    sys.stdout.write('''#!/usr/bin/python
+#@not-modified@
+# Remove the above line if this file has been modified.
+# If you don't, this file will be overwritten.
+# Auto generated during "build".
+{
+    'init-field': {
+        'procs':        '''+str(procs)+''',
+        'filename':     '/tmp/mines.{0}',
+        'sec-maxtime':  900,    # Security timeout
+        'sec-maxarea':  10000,  # Maximum allowed area
+    },
+    'hiscores': {
+        'file':         "'''+str(hiscorefile)+'''",
+        'entries':      16,     # Top N, how many entries per sublist
+        'maxsize':      524288, # Security: Maximum allowed filesize (bytes)
+        'use-user':     True,   # List login names
+        'use-nick':     True,   # Let players choose their own names
+        'nick-maxlen':  100,    # Longest allowed nickname (unicode codepoints)
+    },
+}
+''')
+
+if __name__ == '__main__':
+    main()
+__EOF__
+
+# Count the number of logical processors.
+# NOTE: If the first command in a pipeline fails, the pipeline itself may
+# succeed!  (wc -l says there are zero processors.)
+# BUG *1: sysctl(1) on OpenBSD does not fail, the first sysctl command
+# must work.
+# NOTICE                v: Don't forget the semicolon!
+_n0 () { nproc --all;                               } # Debian
+_n1 () { lscpu && lscpu -p | grep -v '#' | wc -l;   } # (Linux)/Debian
+_n2 () { sysctl -n hw.ncpufound;                    } # OpenBSD, BUG *1
+_n3 () { sysctl -n kern.smp.cpus;                   } # BSD (Should I use this?)
+_n4 () { sysctl -n hw.logicalcpu;                   } # BSD
+_n5 () { sysctl -n hw.ncpu;                         } # BSD (fallback)
+_n6 () { psrinfo && psrinfo | wc -l;                } # (OpenSolaris)/openidiana
+n=0; last=6
+while [ $n -le $last ]; do
+    ncpus=`_n$n` 2> /dev/null && break
+    n=$(($n + 1))
+done
+
+oldpwd=`pwd`
+cd "$srcdir"
+$python "$pyfile" "$ncpus" "$hiscorefile" > "$outfile" \
+    || cp "$fallbackfile" "$outfile"
+cd "$oldpwd"

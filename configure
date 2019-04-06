@@ -1,0 +1,28 @@
+#!/bin/sh
+
+if [ $# -eq 1 ]; then
+    for help_option in -h --help; do
+        if [ "$1" = $help_option ]; then
+            if [ -z "$PAGER" ]; then PAGER=false; fi
+            $PAGER INSTALL || pager INSTALL || less INSTALL \
+                || more INSTALL || echo Read '"INSTALL"'
+            exit
+        fi
+    done
+    for version_option in -V --version; do
+        if [ "$1" = $version_option ]; then
+            echo "Anonymine $(grep 'VERSION := ' Makefile.static |cut -d= -f2)"
+            echo "Handmade configure and configure.py"
+            exit 0
+        fi
+    done
+fi
+
+for python_version in pypy3 pypy pypy2 python3 python python2; do
+    "$python_version" -c '' 2>/dev/null || continue
+    "$python_version" configure.py "$@"
+    exit 0
+done
+
+echo "No Python version found" >&2
+exit 1

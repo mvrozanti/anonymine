@@ -1,0 +1,72 @@
+0.5.7
+    - No option to disable flagcount.  (Highscores will merge.)
+    - Both configuration files: Settings for highscores are now required.
+    - anonymine_engine.py: The hiscores_dummy class has been removed.
+
+0.5.6
+    - cursescfg has changed: Added a key cfg['curses-input']['quit']
+
+0.5.3
+    - Links in documentation may be broken as I have recently moved from
+      Github to Gitlab.
+
+0.4.11
+    - cursescfg has changed: Added a section cfg['curses-mouse-input']
+    (Old versions are incompatible)
+
+0.4.10
+    - cursescfg has changed: Added a key cfg['curses-input']['attention']
+      (Old versions are incompatible)
+
+0.4.9
+    - cursescfg has changed, old versions are compatible even if make install
+      thinks otherwise.
+
+0.4.8
+    - PyPy will be used instead of CPython if possible.
+    - New Makefile/configure variable: "python" the path to the desired
+      Python interpreter.
+    - MODULES_OTHERVER has been removed from configure and Makefile.
+    - If you have PyPy installed, you should run
+        ./configure -v # DESTDIR=foo
+        make  # Needs to have the same DESTDIR as `make install`.
+        sudo make install
+        sudo python symlinks install    # in $(builddir)
+        sudo python symlinks uninstall  # in $(builddir)
+
+0.4.5 - 0.4.7
+    - Avoid 0.4.5 and 0.4.6, use 0.4.7 instead, the issues #16 and #17 were
+      not fixed correctly.
+        - If you already had one of them, run
+            ./configure -v && make
+          to fix the issues in the previous versions.
+    - `make` makes Makefile, you should only have to run `./configure` once.
+    - Do not send 'srcdir' and 'builddir' to `make`.
+    - `make install` depends on `make all`.
+
+0.3.8
+    - Removed Windows support.
+      You can find an untested Windows version at
+      https://gitlab.com/oskog97/anonymine-windows
+
+0.3.6
+    - cursescfg: color pair number are calculated automatically.
+      The textics tuples are now (char, foreground, background, attributes)
+      instead of (pair, char, foreground, background, attributes).
+
+0.3.1
+    - Introduced losers' highscores: anonymine_engine.hiscores.__init__
+      takes one optional argument now.
+      Existing highscores file is usable.
+
+0.2.32
+    - cursescfg contains a new key "highscores".
+    - Function `highscores_display` in "anonymine.py" now takes different
+      arguments.
+
+0.2.24
+    - Deprecated functions have been removed from the solver algorithm.
+
+0.2.23
+    - ./configure freedesktop= macosx= and windows= now take "true" or "false"
+      (CASE SENSITIVE) as value.

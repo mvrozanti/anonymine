@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# Usage: ./dist srcdir builddir pkgname
+
+# This was originally created to simplify Windows support.
+# It now exists because $variable can't be expressed the same in
+# GNU and BSD make.  This issue inhibits the use of loops.
+
+srcdir=$1
+builddir=$2
+pkgname=$3
+pkgdir=$builddir$pkgname
+
+NAME="anonymine"
+subdirs="desktop"
+files="${NAME}.py ${NAME}_engine.py ${NAME}_fields.py ${NAME}_solver.py \
+    configure.py Makefile.static install-cfg enginecfg.fallback cursescfg \
+    test.py testcfg desktop/Info.plist.py desktop/icon.icns.py \
+    ChangeLog FAQ INSTALL NEWS README LICENSE desktop/FILES \
+    desktop/README RELEASE-NOTES INSTALL.Haiku \
+    configure check.sh desktop/desktop.sh desktop/${NAME}-*.png \
+    desktop/${NAME}*.xcf mkenginecfg mkdist mk-symlinks"
+
+
+
+mkdir $pkgdir
+
+for subdir in $subdirs; do
+    mkdir "$pkgdir/$subdir"
+done
+for f in $files; do
+    cp "$srcdir$f" "$pkgdir/$f"
+done
+
+cd $builddir
+tar -cf "$pkgname.tar" "$pkgname"
+rm "$pkgname.tar.gz" 2>/dev/null
+rm "$pkgname.tar.xz" 2>/dev/null
+gzip -9 -k "$pkgname.tar" || echo no gzip
+xz -9e -k "$pkgname.tar" || echo no xz
+
+rm "$pkgdir.tar"
+rm -r "$pkgdir"

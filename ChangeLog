@@ -1,0 +1,1261 @@
+2019-03-11      Oskar Skog      <https://oskog97.com/#contact>
+    0.5.7
+        * anonymine.py, anonymine_engine.py:  Removed the no flag count option.
+        *: Minor clean ups every here and there.
+        * anonymine.py (main): $(prefix)/etc is a weird place to expect to find
+            configuration files.  They wouldn't be there unless you've run
+            ./configure && make && make install on a system where such a
+            directory exists.  Not needed as a backup search path.
+        * anonymine.py, anonymine_engine.py:  Settings for highscores are now
+            mandatory.
+
+2019-03-09      Oskar Skog      <https://oskog97.com/#contact>
+    0.5.6
+        * anonymine_engine.py (game_engine):
+            Bugfix: Fails to initialize fields in non-unix
+                mode.  It was supposed to work without fork (although slowly),
+                but apparently it never has.
+            Bugfix: Removed tempfile without closing first.
+        * anonymine.py (curses_game): Add a curses_voodoo attribute to decide
+            whether or not to reset to shell mode while initializing. It's
+            needed on at least Debian, but makes the game break on Windows.
+        * anonymine.py: Cleaned up the imports section.
+        * anonymine.py (highscores_display): Use more if less fails.
+        * cursescfg, anonymine.py (curses_game.input): ^C and keypad
+            enter did not work in curses mode on Windows. Also added a quit
+            key "q".
+        * windows-beta/*, anonymine.py [Windows]: New location for configuration
+            files and such.
+        * INSTALL.Windows.txt: (created)
+        * README (platforms): It was time for an update on that section.
+        * FAQ: Using Cygwin does not seem so convenient anymore.
+
+2018-11-07      Oskar Skog      <https://oskog97.com/#contact>
+    0.5.5
+        * anonymine_engine.py: Use SIGTERM instead of SIGCONT to kill workers.
+        * anonymine.py: Ignore SIGTSTP due to curses issues.
+            BUG: The above change was specifically made to allow pausing.
+        * configure.py: Workaround for PyPy on OpenBSD, there are no
+            site-packages nor dist-packages directory in sys.path.
+        * desktop/icon.icns.py: Removed some silliness.
+        * mkdist: Remove existing tarballs to avoid complaints from gzip and xz
+
+2018-10-10      Oskar Skog      <https://oskog97.com/#contact>
+    0.5.4
+        *: Some systems do not have a symlink for `python`. Fix to allow
+            python3 and python2 as alternatives.
+        * INSTALL, INSTALL.Haiku: Minor modifications
+
+2018-10-07      Oskar Skog      <https://oskog97.com/#contact>
+    0.5.3
+        *: Moved from Github to Gitlab
+        * configure.py: Issues with install(1) again.
+        * mkenginecfg: Workaround for OpenBSD's sysctl.
+
+2017-12-08      Oskar Skog      <https://oskog97.com/#contact>
+    0.5.2
+        * INSTALL: Mac OS X section
+        * README: Some corrections
+2017-09-04      Oskar Skog      <https://oskog97.com/#contact>
+    pre-0.5.2
+        * anonymine.py (convert_param): Small correction to the easter egg.
+        * configure.py (find_MODULES): Fixed Mac specific bug.
+        * configure.py: Corrected spelling in the shebang.
+        * INSTALL: Mac comment, one small fix.
+
+2017-08-13      Oskar Skog      <https://oskog97.com/#contact>
+    0.5.1
+        * anonymine.py (user_input):
+            - Removed outdated comment
+            - Don't bother checking if doc-hex or doc-square exists in
+              cursescfg.
+        * anonymine.py (convert_param):
+            - Corrected the easter egg code.
+        * anonymine.py (arg_input, user_input):
+            - Mentioned the issue with high densities
+
+2017-02-20      Oskar Skog      <https://oskog97.com/#contact>
+    0.5.0
+        *: Updated the year on a few copyright statements.
+        * INSTALL, configure.py: No need for the -w option anymore.
+            (Something must have broken its use by now. ;)
+
+2017-01-02      Oskar Skog      <https://oskog97.com/#contact>
+    0.4.17
+        * anonymine.py (curses_game (print_cell)): Don't restrict the
+            attention mode on numbers surrounded by too many flags. If
+            at most one flag must be left before finding misplaced flags,
+            2000 mines would be nearly impossible to sweep.
+        * NEWS: (See above change in anonymine.py)
+        * anonymine.py (line 3): s/2016/2016-2017/
+
+2017-01-01      Oskar Skog      <https://oskog97.com/#contact>
+    0.4.16
+        * LICENSE, anonymine.py: It's 2017 now.
+        * NEWS: Practically at 0.5 already, only regression fixes may be added.
+
+2016-12-31      Oskar Skog      <https://oskog97.com/#contact>
+    0.4.15
+        * ChangeLog: Hide mail address.
+        * anonymine.py (curses_game): Created new method `print_cell` to
+            reduce code duplication and introduce the attention mode to
+            numbers with too many flags around them.
+
+2016-12-28      Oskar Skog      <https://oskog97.com/#contact>
+    0.4.14
+        * anonymine.py (curses_game (print_char)), cursescfg:  Allow non ASCII
+            textics on Python3.
+        * anonymine.py (input): Don't redraw the window every time there has
+            been a non flagging and non revealing mouse events.
+        * README: New account play@anonymine-demo.oskog97.com:2222
+        * cursescfg:
+            - The `pair` index of the tuples has since long been removed.
+            - Advice users to scroll at the edges when using the mouse.
+            - BUTTON1 and BUTTON3 comment
+            - Unicode support comments.
+            - Extra wide characters are not supported
+
+2016-12-25      Oskar Skog      <https://oskog97.com/#contact>
+    0.4.13
+        * anonymine_fields.py (generic_field.reveal): Use a loop instead of
+          recursion. Allows really low mine densities.
+
+2016-12-23      Oskar Skog      <https://oskog97.com/#contact>
+    0.4.12
+        * RELEASE-NOTES: Added some old notes.
+        * check.sh: enginecfg.default -> enginecfg.fallback
+        * configure.py (find_MODULES): Bugfix:
+            "/usr/local/liby-5.4/site-packages"
+    0.4.11
+        * anonymine.py (curses_game), cursescfg: Mouse support.
+
+2016-12-22      Oskar Skog      <https://oskog97.com/#contact>
+    0.4.10
+        * cursescfg: Changed to improve contrast.
+        * cursescfg, anonymine.py (curses_game): Added an attention mode to
+            make it easier to find free cells near the end.
+
+2016-12-20      Oskar Skog      <https://oskog97.com/#contact>
+    0.4.9
+        * anonymine_engine.py (game_engine.play_game): "time taken to play"
+            was calculated after the "Press the any key" screen.
+        * anonymine.py (curses_game):
+            - Added KeyError to curses_output_cfg
+            - Moved print_char below move_visbile area
+            - Use new function print_digit to print the digits
+              (multiple colors)
+        * cursescfg:
+            - Different colors for different digits
+            - Reverse video for mines
+
+2016-12-19      Oskar Skog      <https://oskog97.com/#contact>
+    0.4.8
+        * configure.py, Makefile.static, INSTALL: Don't install modules
+            for the other Python version. Removed $(MODULES_OTHERVER).
+        * Makefile.static (build-freedesktop, build-macosx): Use Makefile as
+            a Makefile.
+        * Makefile.static (all etc), mk-symlinks: New file mk-symlinks that
+            creates $(builddir)symlinks which creates the symlinks using a
+            new method.
+        * configure, configure.py, Makefile.static ($(MAIN_STAGE)), INSTALL:
+            Use PyPy is possible; New Makefile variable: $(python);
+            ./reconfigure will use sys.executable.
+
+2016-12-18      Oskar Skog      <https://oskog97.com/#contact>
+    0.4.7
+        * Makefile.static:
+            - Use "$(MAKE)" instead of "make".
+            - Made print-destinations print to stderr.
+        * configure.py: Remade find_MODULES.
+        * INSTALL: Many small corrections.
+        * Makefile.static:
+            - Made recursive make wrapper for install-dirs
+            - `make install` depends on the internal targets.
+              (Avoids unnecessary recursions.)
+            - $(MAIN_STAGE) now depends on Makefile.vars too.
+            - $(ENGINECFG_STAGE) now depends on Makefile.vars.
+        * RELEASE-NOTES: Inform that 0.4.5 and 0.4.6 didn't fix issues
+            #16 and #17 properly.
+
+2016-12-16      Oskar Skog      <https://oskog97.com/#contact>
+    0.4.6
+        *: The fix for #17 didn't work, make kept running the old Makefile.
+    0.4.5
+        * README: Corrected RAM usage.
+        * Makefile.static: "install" depends on "all", Makefile will be
+            automatically regenerated.
+        * configure.py:
+            - Write out two new files to $(builddir):
+                reconfigure: Run ./configure with the same arguments
+                Makefile.vars: Avoid running an unchanged ./configure again
+            - Sort the order of Makefile variables.
+        * INSTALL: srcdir and builddir should only bet sent to `./configure`.
+
+2016-12-15      Oskar Skog      <https://oskog97.com/#contact>
+    0.4.4
+        * anonymine.py, anonymine_engine.py, anonymine_fields.py, anonymine_solver.py:
+            Not all operating systems have os.geteuid.
+        * anonymine.py (main): OpenIndiana had fixed the issue long ago.
+
+2016-12-10      Oskar Skog      <https://oskog97.com/#contact>
+    0.4.3
+        * anonymine_solver.py: The PyPy bug has been tracked down to the
+            `possibilities` function.   Bug fixed: used `is` instead of `==`
+            when comparing a variable against a string literal.
+        * test.py: Use `profile` instead of `cProfile`.
+    0.4.2
+        * anonymine.py: Updated status of
+            https://gitlab.com/oskog97/anonymine/issues/14
+        * Makefile.static: Re-enabled overwrite-cfg.
+        * anonymine.py: Warn of the opendiana bug:
+            https://gitlab.com/oskog97/anonymine/issues/4
+
+2016-12-06      Oskar Skog      <https://oskog97.com/#contact>
+    0.4.1
+        * anonymine_solver.py (solver_loop): Found a potential bug:
+            `fail` was not set to False if a solvable cell was found.
+        * anonymine_solver.py: Removed commented out profiling code.
+        * anonymine_solver.py: (WRONG>>) Tracked down the PyPy bug to the
+            number_neighbours function.  Uncomment the print and
+            run pypybug() in test.py. (<<WRONG)
+
+2016-12-05      Oskar Skog      <https://oskog97.com/#contact>
+    0.4.0
+        * NEWS: gitgub.com does not resolve; converted a reference to BUGS
+        * INSTALL: MUST run `make` before `make install`; mentioned bug with
+            symlinks when DESTDIR is set.
+        * Makefile.static (uninstall), INSTALL: Delete the highscores file.
+
+2016-12-04      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.19
+        * HACKING: Mention that only versions 0.1.15 and above are in Github
+            (and Gitlab).
+        * INSTALL: Many small changes.
+        * NEWS: Added NEWS for 0.4.  Will bump the version to 0.4.0 if there's
+            nothing else to do on 0.3.z.
+    0.3.18
+        *: Got rid of BUGS.  BUG descriptions have been moved into comments
+            at relevant locations in the source and to Github issues.
+        * anonymine_engine.py: Removed weird FIXME from play_game:
+            self.start = time.time()
+    0.3.17
+        *: enginecfg.default -> enginecfg.fallback to avoid confusion.
+        * mkenginecfg: renamed enginecfg.default -> enginecfg.fallback;
+            removed possibly outdated TODO
+        * mkdist: Various changes.
+        * HACKING: Fixed the TODO for mkdist. Updated about enginecfg stuff.
+        * ChangeLog [0.2.26]: Fixed typo.
+
+2016-12-03      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.16
+        * README:
+            - Split "Tested platforms" up into "Tested platforms" and
+              "Software & hardware requirements".
+            - Added some HW requirements and reformatted the SW requirements.
+            - Added link to the anonymine-windows Github repo.
+            - Some tiny changes
+            - Added "text based" as a synonym for "curses mode".
+        * FAQ:
+            - New question: Question about the losers' highscores.
+            - Rearranged
+            - Removed Windows specific details.
+
+2016-11-26      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.15
+        * configure.py: Exiting properly on both Cygwin and NetBSD.
+            See https://gitlab.com/oskog97/anonymine/issues/7
+
+2016-11-20      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.14
+        * INSTALL.Haiku: Terminal bug has been fixed.
+        * README:
+            - Added Haiku as a tested platform.
+            - Added note about $TERM on NetBSD.
+
+2016-11-06      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.13
+        * BUGS: Removed problematic platform #2 (openindiana)
+        * README:
+            - Anonymine is it's name now.  Name suggestions are no
+              longer welcome
+            - Delayed mouse support to 0.5.z
+            - Edited the features list
+        * HACKING:
+            - Updates to file list
+            - Removed Windows stuff section
+            - Added note about make uninstall
+            - Documented enginecfg.default
+
+2016-10-26      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.12
+        * configure.py: Use `sys.exit` instead of `os._exit` as the latter
+            caused weird issues with stream redirection.
+
+2016-10-23      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.11
+        * README: http://anonymine-demo.oskog97.com:8080/ link removed.
+        * anonymine.py (curses_game.input): The redrawing of the screen after
+            initialization never worked as the game status got changed.
+            Junk on the screen from impatient players will now be cleared.
+        * INSTALL.Haiku: Use env(1) instead of setting and resetting $TERM.
+        * desktop/*: Brief descriptions.
+
+2016-10-21      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.10
+        * desktop/anonymine.v0.xcf: Gone.
+        * Makefile.static:
+            - Was still looking for name suggestions...
+            - Sections are now clearer.
+        * mkdist, Makefile.static: Simplify code now when Windows support is
+            gone.
+
+2016-10-20      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.9
+        * Forgotten Windows stuff, minor style fixes.
+    0.3.8
+        *: Removed Windows support.  (Going to create that in a different
+            repo.)
+
+2016-10-02      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.7
+        * cursescfg: flag:hex green on black to black on green
+        * cygwin-sshd, BUGS: No uninstaller for cygwin-sshd.
+    0.3.6
+        * cursescfg: New textics
+        * anonymine.py, cursescfg: Calculate pair numbers automatically.
+
+2016-09-17      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.5
+        * anonymine_engine.py (hiscores): Python 2.6 incompatibilities fixed:
+            - str.format can't handle empty field names ('{}')
+            - str.decode takes no keyword arguments
+
+2016-09-10      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.4
+        * cursescfg: Use reverse video for the flags to make them more
+            distinguishable on monochrome terminals.
+        * anonymine_engine.py (hiscores (add_entry)): Failed to set
+            display_caption when the player didn't make it to highscores.
+        * Makefile.static: Added distclean.
+
+2016-09-07      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.3
+        * anonymine_engine.py (hiscores (add_entry)): list.index does not
+            return None, but raises ValueError. Plus various changes for
+            the fix.
+
+2016-08-27      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.2
+        * anonymine.py (ask): Do no more than 10 000 000 attempts on EINTR
+            handling.
+
+2016-08-22      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.1
+        * anonymine_engine.py (hiscores, game_engine (play_game)):
+            Added highscores for lost games.
+        * anonymine_fields.py (generic_field (_call)): Check that won games
+            really are won, any defect will automatically turn
+            'win' into 'lose'.
+        * anonymine.py (output): Do no more than 10 000 000 attempts.
+
+2016-08-16      Oskar Skog      <https://oskog97.com/#contact>
+    0.3.0
+        * NEWS: Introduced 0.3
+        * INSTALL: Warn of the removal of configuration files.
+    0.2.32
+        * anonymine.py (highscores_display), cursescfg: Use pseudo-tab-ish
+            spacing between the columns and make horizontal scrolling in less
+            faster.
+            NOTICE: `highscores_display` now takes four arguments.
+
+2016-08-15      Oskar Skog      <https://oskog97.com/#contact>
+    0.2.31
+        * anonymine.py: Set LESSSECURE=1
+
+2016-08-13      Oskar Skog      <https://oskog97.com/#contact>
+    0.2.30
+        * README: It works again on Minix 3.3 and openindiana.
+        * configure.py [openindiana]: INSTALL_CMD was changed to INSTALL in
+            Makefile.static at version 0.1.17.  I forgot to change it in
+            configure.py as well.
+        * INSTALL: Added "INSTALL" as a recognized variable
+        * anonymine_engine.py [Minix]: Guess what, Python 2.7 on Minix 3.3
+            has no math module. Created a really dumb replacement.
+        * anonymine.py [Minix]: Can't import subprocess either. Piping to
+            less will fail, but that's a tolerable error.
+    0.2.29
+        * INSTALL: Windows notice removed. Added less(1) as a weak dependency.
+        * `make dist`: Include "testcfg" as it's needed by something in
+            test.py.
+        * anonymine_engine.py (hiscores (display)): Bugfix:
+            UnicodeDecodeError on localized weekday abbreviations.
+        * anonymine.py (highscores_display): Bugfix: Encode the text before
+            sending to less(1).
+        * anonymine_engine.py (hiscores): Documented the Unicode thingies.
+
+2016-08-12      Oskar Skog      <https://oskog97.com/#contact>
+    0.2.28
+        * anonymine_engine.py (hiscores (_load)): Bugfix:
+            The IO error table didn't work as hiscores was None rather than []
+        * (All python modules): Allow running as root on Haiku.
+        *: New file INSTALL.Haiku.
+        *: Moved Windows.txt to INSTALL.Windows to match the new pattern.
+
+2016-08-11      Oskar Skog      <https://oskog97.com/#contact>
+    0.2.27
+        * Makefile.static (print-destinations): Fixed syntax error.
+        * Makefile.static (release): Added verbose messages, added new
+            target "test" as a synonym for "check".
+    0.2.26
+        * anonymine.py (highscores_display):
+            - Add -# 1 as options to less.
+            - Allow subprocess to fail.
+        * README: Added some notes about the tested platforms.
+            Minix 3 and openindiana no longer work.
+        * mkenginecfg:
+            - seq(1) is apparently a GNU specific utility.
+            - Added quotes around $nproc to let the Python script succeed
+              even if no method of counting processors worked.
+
+2016-08-10      Oskar Skog      <https://oskog97.com/#contact>
+    0.2.25
+        * anonymine.py (highscores_display): Use less(1).
+    0.2.24
+        * anonymine_solver.py: Removed deprecated functions.
+        * README: Dropped goal 0.5: statistics module. Rephrased 0.6(->0.5)
+        * test.py: Removed functions that depend on the deprecated statistics
+            functions.
+
+2016-08-08      Oskar Skog      <https://oskog97.com/#contact>
+    0.2.23
+        *: New file: HACKING, RELEASE-NOTES
+        * README: Moved file listing to HACKING.
+        * Makefile.static: $$ doesn't work on FreeBSD's make, it needs to be
+            $$$$ which doesn't work on gmake.
+            - Created a small shellscript to be invoked from `make dist`.
+            - Hard coded the icons sizes. Ugh.
+        * Makefile.static ($(MAIN_STAGE)): Depend on Makefile.static to
+            force the correct version number.
+        * Makefile.static (dist): Don't depend on zip and tarballs. Doing
+            that will cause issues with parallel make.
+        * Makefile.static, configure.py, RELEASE-NOTES, INSTALL: Changed the
+            values for freedesktop, macosx and windows to the unambiguous true
+            or false.
+
+2016-07-19      Oskar Skog      <https://oskog97.com/#contact>
+    0.2.22
+        * anonymine_engine.py (hiscores (display)): Www HH:MM goes back to
+            six days; Added "(Future)"
+        * configure.py, Makefile.static, anonymine.py, INSTALL: Allow
+            $(sysconfdir) to be anything.
+        * INSTALL: Modified.
+
+2016-07-18      Oskar Skog      <https://oskog97.com/#contact>
+    0.2.21
+        * Makefile.static, anonymine.py, configure: Moved version numbering
+            into Makefile.static only to simplify version bumping.
+    0.2.20
+        * cursescfg:  Difficult to see anything in B&W mode: Change '?' to '.'
+            to increase the visual difference between flags and free cells.
+        * INSTALL: Updated to match these changes:
+        * Makefile.static: Disabled overwrite-cfg due to the new behavior
+            of check-install-cfg.
+        * install-cfg:
+            - Wrote docstrings
+            - Changed return values for `decide`
+            - Tell which configuration file is incompatible and refer to the
+              source file.
+        * install-cfg, Configuration files: Added support for a status quo
+            marker line.  If the magic line can be found in the destination
+            file, it will be overwritten.
+        * install-cfg, Makefile.static (check-install-cfg): Send the verbose
+            variable to ./install-cfg to make it shut up if it has nothing
+            exceptional to say.
+
+2016-07-17      Oskar Skog      <https://oskog97.com/#contact>
+    0.2.19
+        * cursescfg: Hexagonal grid was still too bright -> set to A_DIM,
+            text does not need to be bright.
+        * anonymine.py (highscores_add_entry): Fixed double-prompt for nickname.
+    0.2.18
+        * anonymine.py, BUGS: Got away with only redrawing on the first click
+            (initialization).  This was previously a potential performance
+            issue.
+        * cursescfg: Bright/bold magenta was too bright for the hexagonal grid.
+    0.2.17
+        * BUGS, anonymine.py: #9, use a different fix.
+            - `ask` modified to handle EINTR
+            - New function `output` created as wrapper.
+            - Added 'str' as paramtype to `convert_param`
+        * anonymine_engine.py (game_engine.init_field2):
+            - Handle EINTR on os.wait, os.fork already does this
+              unintentionally.
+            - raise security_alert rather than Exception for the timeout alarm.
+              (except Exception caught lots of other stuff.)
+        * anonymine.py: Use str(game_engine.security_alert) rather than
+            game_engine.security_alert.message.
+        * BUGS: Added note about #3
+        * mkenginecfg, enginecfg.default: sec-maxtime: 90 -> 900
+
+2016-07-16      Oskar Skog      <https://oskog97.com/#contact>
+    0.2.16
+        * anonymine_engine.py (hiscores), etc: Force UTF-8 on the file.
+            - Functions may return unicode objects as strings on Python 2, but
+              that's no problem as unicode and str can be combined as long as
+              the str only contains bytes in the ASCII range.
+            - add_entry, will decode the str object on Python 2 using
+              locale.getprefferedencoding() as encoding
+            - The maxsize key now refers to the number of bytes on both
+              Pythons.
+            - Added a nick-maxlen key to limit the length of nicknames.
+        * anonymine.py (highscores_add_entry): sys.stdin.readline may raise
+            UnicodeDecodeError on Python 3. Grr.
+        * anonymine_engine.py (init_field2): open(file, 'x') raised ValueError
+            on Python 3.2, **try** 'wx' and then 'x', and if both fail, 'w'.
+        * mkenginecfg, enginecfg.default: entries set to 16, previously: 10
+
+2016-07-15      Oskar Skog      <https://oskog97.com/#contact>
+    0.2.15
+        * Makefile.static (print-destinations): \t doesn't work on FreeBSD;
+            indented manually with normal whitespace instead.
+    0.2.14
+        * Makefile.static: Undo change in 0.2.9 causing configuration files
+            to not be installed in clean environments:
+            - install-dirs now installs CFG_DIR and $(DESTDIR)$(vargamesdir)
+            Apparently, install
+    0.2.13
+        * configure.py: BUGFIX in many find_ functions:
+            Don't use Makefile[var] for checking the existence of directories,
+            use expand(var, Makefile) instead.  Detected on FreeBSD where
+            $(prefix)/var both exists and doesn't.
+    0.2.12
+        * INSTALL:
+            - Tidying.
+            - Wrote a section on srcdir, builddir and DESTDIR.
+        * Makefile.static (print-destinations):
+            - Highscores file
+            - Append (directory) on directory lines.
+    0.2.11
+        *: Tidied up lots of files.
+        * BUGS:
+            - Updated #6 to match current versions of Anonymine.
+            - Tidied
+            - Removed #0
+        * configure.py:  Wrote missing doc-strings.
+        * configure.py:  Moved default Makefile variables from getargs to main.
+    0.2.10
+        * anonymine_engine.py (init_field2):
+            - Use SIGTERM to kill children if SIGCONT is unavailable.
+            - Allow fork() to fail.
+            - Use signal.alarm() in a more elegant way.
+            - Add 64 bits of entropy to the tempfiles, just in case
+              open(file, 'wx') fails to do its trick.
+
+2016-07-14      Oskar Skog      <https://oskog97.com/#contact>
+    0.2.9
+        * INSTALL: Updated
+        * enginecfg.default: Added the hiscores key.
+        * cygwin-sshd:
+            - Added "Things that will be done:" to avoid confusion.
+            - exit 0 instead of fatal if the user aborts.
+        * Makefile.static:
+            - Added DESTDIR to HISCORE_FILE
+            - install-dirs now installs CFG_DIR and $(DESTDIR)$(vargamesdir)
+    0.2.8
+        * configure.py: New functions: find_sysconfdir and find_vargamesdir.
+        * anonymine.py, configure.py, Makefile.static: Place configuration
+            files in $(sysconfdir)/anonymine
+        * Makefile.static: enginecfg calibration message updated.
+        * mkenginecfg, Makefile.static: Install highscore file.
+        * mkenginecfg: time and pprint modules are no longer needed.
+        * mkenginecfg: Write out the configuration file manually.
+    0.2.7
+        * anonymine_engine.py anonymine.py: Python 3 fixes:
+            - anonymine_engine.hiscores.display.format_deltatime formatted
+              the ms part as gibberish. [Fixed]
+            - anonymine.play_game, anonymine.highscores_add_entry did not
+              flush. [Fixed]
+        * anonymine_engine.py (hiscores (display)): "/\T" -> "/\T time"
+    0.2.6
+        * anonymine.py: New functions highscores_display and
+            highscores_add_entry.  Highscores are now displayed
+            almost properly.
+        * anonymine_engine.py (hiscores_dummy (display)): Title no longer empty.
+    0.2.5
+        * anonymine_engine.py (hiscores.add_entry): Reload the hiscores file
+            after retrieving the nickname to avoid overwriting potential
+            changes.
+    0.2.4
+        * anonymine_engine.py (hiscores):  Get the nickname only if the player
+            actually made it to the list.
+        * anonymine_engine.py (hiscores (add_entry)):  The input callback MUST
+            now take two arguments: title, prompt
+        * anonymine.py: Input callback updated.
+
+2016-07-13      Oskar Skog      <https://oskog97.com/#contact>
+    0.2.3
+        * anonymine.py: Primitive highscores interface for debugging purposes.
+        * anonymine_engine.py: New classes: hiscores, hiscores_dummy
+        * anonymine_engine.py (game_engine (play_game)): Create a `hiscores`
+            object.
+            Second return argument is now a `hiscores` object, previously
+            it was a float representing the time it took to win or lose.
+        * anonymine_engine.py (game_engine (__init__)): Added self.dimensions
+            and self.flagcount to allow `play_game` to create a proper
+            paramstring for hiscores.__init__.
+
+
+2016-07-07      Oskar Skog      <https://oskog97.com/#contact>
+    0.2.2
+        * mkenginecfg: Bugfix:
+            `nonexisting-cpulister | wc -l` returns 0 processors
+            and succeeds.
+            - Fixed the pipelines.
+            - Added a sanity check.
+        * configure.py: Fix verbosity setting for Makefile.
+            Give Makefile verbose=false as default and verbose=true
+            if the -v flag was used.
+        * Makefile.static (overwrite-cfg):
+            Use $(info) instead of echo.
+        * Makefile.static (dist, tarballs, zip):
+            Don't bother writing out the "Depends on tarballs and zip"
+            message as that itself depends on those two targets.
+            Messages are now printed by zip and tarballs.
+    0.2.1
+        * NEWS: Changes from 0.1.0 to 0.2.0
+        * Makefile.static: FILES gone; LICENSE back
+
+2016-06-15      Oskar Skog      <https://oskog97.com/#contact>
+    0.2.0
+        *: Well, it's fast enough.
+        * README: Minor changes
+        * test.py, testcfg: Something I did a long time ago.
+
+2016-03-20      Oskar Skog      <https://oskog97.com/#contact>
+    0.1.21
+        *:
+            - DoS prevention by field area and initialization time.
+                (Raises new class security_alert).
+            - Removed timeout from initialization slaves to improve
+                initialization on larger (emphasis on comparative) fields.
+        * anonymine_engine.py: New class: security_alert.
+        * anonymine_engine.py (game_engine.init_field2):
+            Added DoS prevention timeout.
+        * anonymine_engine.py (game_engine.init_field2.child):
+            - Removed the time limitation for each attempt.
+            - Moved os._exit() from `child`, to the spawn loop.
+        * enginecfg.*, mkenginecfg:
+            - Removed key: 'init-field'.'maxtime' (and the code for it)
+            - Added keys: 'init-field'.'sec-maxarea' and
+                'init-field'.'sec-maxtime'
+
+2016-02-29      Oskar Skog      <https://oskog97.com/#contact>
+    0.1.20
+        * cygwin-sshd: Tested, fixed and improved.
+        * Windows-admin.bat:
+            - Invoke cygwin-sshd
+            - Use '&&' in bash rather than ';'.
+        * mkenginecfg:
+            - Rewrote processor counting part.
+            - Bugfix: Used speed instead of time for time.
+        * Makefile.static:
+            - `$(builddir)enginecfg.out` depends on `$(srcdir)mkenginecfg`.
+            - `clean` cleans up `$(builddir)enginecfg.out` and
+                `$(builddir)enginecfg.py`.
+            - Removed commented old rule for `all`.
+
+2016-02-26      Oskar Skog      <https://oskog97.com/#contact>
+    0.1.19
+        *: Removed vm-README.md, update-anonymine, vmsetup and addplayer.
+        * calibrate-anonymine: Repurposed and renamed to mkenginecfg.
+        * Makefile.static:
+            - Use mkenginecfg
+            - Split up `all` and use Makefile properly.
+            - Move quotes from variable definitions to rules.
+            - mkenginecfg and check.sh should be in PKG_NOCONV.
+            - Added $(info) as a shutupable wrapper for verbose messages.
+                (Not the gmake function.)
+        * check.sh: Fixed to choose the appropriate enginecfg.
+        * INSTALL: updated
+
+2016-02-21      Oskar Skog      <https://oskog97.com/#contact>
+    0.1.18
+        * anonymine.py: Code clean up.
+        * VM-README.md: Added four scripts for a dedicated Anonymine virtual
+            machine. (Playing over SSH).
+
+2016-02-17      Oskar Skog      <https://oskog97.com/#contact>
+    0.1.17
+        * README: Various changes.
+        * ., Makefile.static: Removed perkele/.
+        * Makefile.static: Lots of renamed variables.
+    0.1.16
+        * Makefile.static (clean): Added $(DESKTOP_STAGE) and corrected
+            $(OSX_INFO_PLIST) to $(INFO_PLIST).
+        * desktop/FILES: No such file: anonymine.desktop (auto-generated)
+
+2016-02-14      Oskar Skog      <https://oskog97.com/#contact>
+    0.1.15
+        * configure.py (check_variables):
+            - Prohibit quotes in variables and $() in their names.
+            - [Windows]: Check for quotes in $USERPROFILE.
+        * configure.py (getargs): Less misleading error messages when
+            arguments don't make sense.
+        * configure.py (main): - Don't crash when there were errors in
+            verbose mode.
+        * Windows.txt:
+            - The serious issue seemed to be a false alarm.
+            - Using mkshortcut works.
+        * FAQ: New entry.
+        * Makefile.static (uninstall) [Windows]: Remove the shortcuts from
+            the desktop.
+        * Makefile.static (print-destinations):
+            - Forgot to change $(ICON_DEST) printing code.
+            - Much better layout.
+        * Makefile.static (install): Symlinking can probably be done in
+            $(NORMAL_INSTALL).
+        * Makefile.static:
+            - Introduced $(ICON_SIZES)
+            - Forgot to append $(PERKELE) to $(PKG_NOCONV).
+            - Removed old commented windoze related stuff.
+            - Forgot to prepend $(srcdir) to $(MK_DESKTOP).
+            - Put the $$size in $(ICON_SRC).
+            - New target: clean
+            - Comments and order of variable definitions and targets have been
+                changed.
+            - Removed $(INSTALL_MODULE) and $(INSTALL_MODULE_OTHERVER)
+        * configure:
+            - Use $PAGER and pager(1) if available.
+            - Changed $@ to "$@" to fix a bug when variables contain
+              whitespace.
+        * Windows-admin.bat, Windows-user.bat: No need to tell ./configure
+            what to use as prefix.
+
+2016-02-13      Oskar Skog      <https://oskog97.com/#contact>
+    0.1.14
+        * Windows.txt: Important notes.
+        * desktop/README, desktop/FILES: Written.
+        * desktop/desktop.sh: Generate "anonymine.desktop". Added Comment=.
+        * desktop/icon.icns.py: Head and tail magic
+        * Makefile.static (all) [Windows], Windows-*.bat: Gave up trying to
+            create those cursed .lnk files from hell.  Use mkshortcut(1)
+            from Cygwin instead.
+https://cygwin.com/git/gitweb.cgi?p=cygwin-cygutils.git;a=tree;f=src/mkshortcut
+        *: Added perkele subdirectory.
+
+2016-02-12      Oskar Skog      <https://oskog97.com/#contact>
+    0.1.13
+        * desktop/anonymine.lnk.py: The old .lnk didn't work.
+            Added location information.  Perkele.
+
+2016-02-11      Oskar Skog      <https://oskog97.com/#contact>
+    0.1.12
+        * Makefile.static (all, install) [Windows]:$(ICON_DEST) had been
+            changed to support multiple icons on freedesktop.org.
+        * desktop/anonymine.lnk.py: Unicode support and hidden message.
+        * Makefile.static (all) [Windows], desktop/anonymine.lnk.py: Take
+            description string and command (unix side) as arguments.
+
+2016-02-10      Oskar Skog      <https://oskog97.com/#contact>
+    0.1.11
+        * Makefile.static (uninstall) [freedesktop.org]: Remove the icons
+            of various sizes.
+    0.1.10
+        * desktop/anonymine.lnk.py, desktop/icon.icns.py: Python 3 support.
+    0.1.9
+        * desktop/*: New icons in multiple sizes: 16x16, 32x32, 64x64, 256x256
+        * Makefile.static (install) [freedesktop.org]:  Install icons to
+            $(prefix)/icons/hicolor/*/apps/anonymine.png of various sizes.
+        * Makefile.static (all, install), desktop/icon.icns.py: Make icns icons
+            for Mac OS X.
+
+2016-02-09      Oskar Skog      <https://oskog97.com/#contact>
+    0.1.8
+        * configure.py (get_module_dir) [Mac OS X]: Changes to the directory
+            list.
+        * configure.py (getargs, check_variables): Wrote doc-string.
+        * README: Updated list of tested platforms.
+    0.1.7
+        * configure.py (get_module_dir) [Mac OS X]: Added more directories.
+        * cursescfg, FAQ: Changing colors.
+        * cursescfg, BUGS, anonymine.py (curses_game.output): Changed the
+            characters for 'free' and 'background' to be less confusing
+            when color is unavailable.
+            - Found a new bug and added a workaround
+
+2016-02-08      Oskar Skog      <https://oskog97.com/#contact>
+    0.1.6
+        * configure.py (find_prefix): Ignore the sys.path test on macs.
+        * configure.py (get_module_dir): Added module_dirs_outside with
+            '/Library/Python/X.Y/site-packages' for macs.
+    0.1.5
+        * Makefile.static (dist): Forgot "desktop/Info.plist".
+    0.1.4
+        * desktop/Info.plist: Forgot to set the category.
+        * Makefile.static (uninstall): Uninstall DE files.
+    0.1.3
+        * configure.py, INSTALL, Makefile.static:
+            UNTESTED Mac OS X fake-bundle.
+        * Makefile.static, *: Moved desktop related files into new
+            directory 'desktop'.
+        * Makefile.static (dist): Four files have been removed:
+            "portability", "GOALS", "LICENSE" and "check.py".
+            * INSTALL, README, BUGS: Removed the file portability.
+                The contents were spread out into three different files.
+            * README: README ate GOALS and LICENSE.
+            * check.sh, Makefile.static: Send $(builddir) to check.sh
+                and have check.sh write out the check.py script.
+        * FILES: updated.
+
+2016-02-05      Oskar Skog      <https://oskog97.com/#contact>
+    0.1.2
+        * configure.py, Makefile.static: Install menu shortcuts.
+            New variables:
+                freedesktop=""      .desktop with .png icon
+                windows=""          .lnk with .ico icon
+        * anonymine.lnk.py: Takes arguments, more sources.
+        * Makefile.static: New target: install-dirs
+
+2016-02-03      Oskar Skog      <https://oskog97.com/#contact>
+    0.1.1
+        * Makefile.static (dist): Bash doesn't understand CRLF line endings.
+            -> Rename $(PKG_WINDOWS_FILES) to $(PKG_NOCONV_FILES) and append
+            'configure'.
+        * Windows-admin.bat: Add --wait option to the Cygwin installer to
+            prevent race-condition.
+        * Windows.txt: Clarified the installation instructions a bit.
+        * anonymine_engine.py (game_engine.init_field2), BUGS:
+            Found and fixed BUG#6.
+        * configure.py: I forgot about these doc-strings, and now I got
+            interrupted with the Windoze fix.
+        *: New files: 'anonymine.lnk.py' and 'anonymine.lnk'.
+        * FAQ: New question.
+
+2016-02-02      Oskar Skog      <https://oskog97.com/#contact>
+    0.1.0
+        *: New file: NEWS
+        * test.py (runmoore): anonymine_fields.generic_field2 does not exist
+            anymore.
+        * Windows.txt: Mention the lack of testing.
+        * Windows.txt: Mention extraction of the directory.
+        * ChangeLog (0.0.43): Zip creation bug had been fixed.
+        * anonymine.py (convert_param, play_game): Minimal value for
+            dimensions is now 4, due to the possibility of making an
+            unwinnable 3 by 3 field.
+        ----------------------------------------------------------------------
+        * anonymine.py: Unimportant fix to top level doc-string
+        * anonymine.py: Mention gametypes in top level doc-string
+        * anonymine_engine.py: Unimportant fix to top level doc-string
+        * anonymine_fields.py: Moved FreeBSD license to top.
+        ----------------------------------------------------------------------
+        * anonymine.py (curses_game.curses_output_cfg): Doc-string fix
+        * anonymine.py (arg_input): Doc-string fix
+        * anonymine.py (ask): 'converter' -> 'paramtype'
+        * anonymine.py (curses_game): The doc-string didn't work due to
+            '''<doc-string>'''.format(...).
+            + minor fixes.
+        * anonymine.py (play_game): Doc-string fix
+        ----------------------------------------------------------------------
+        * anonymine_engine.py (game_engine): Doc-string fix
+        * anonymine_engine.py (game_engine.__init__): Min-dim: 4
+        * anonymine_engine.py (game_engine.init_field2): Doc-string fix
+        * anonymine_engine.py (game_engine.init_field2): Doc-string fix
+        ----------------------------------------------------------------------
+        * anonymine_fields.py (generic_field): Doc-string fix
+        ----------------------------------------------------------------------
+        * anonymine_solver.py: Various doc-strings.
+
+2016-02-01      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.43
+        *: New files: FAQ, FILES
+        * Windows-user.bat: LF->CRLF
+        * Makefile.static (dist): New targets: dist, release, tarballs, zip
+            Creation of zips no longer buggy.
+        * INSTALL: Updated the section on Makefile targets.
+     
+    0.0.42
+        * anonymine_solver.py: Deprecated the statistics methods.
+        * configure.py (find_prefix): Added two one-liners that should make
+            it choose a prefix that will work.
+        * Windows.bat -> (Windows-admin.bat, Windows-user.bat):  Made a
+            separate bitch file for non-admin installation.
+        * Windows.txt: Updated the documentation.
+
+2016-01-31      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.41
+        * Windows.bat, Windows.txt: Wrote an installer for Windoze.
+        * BUGS: P(BUG#2) < 1/717708
+        * INSTALL: Refer to Windows.txt for windoze users.
+        * Makefile.static: Make zip archives (buggy).
+
+2016-01-30      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.40
+        * Makefile.static (check), check.sh, check.py:
+            Added a 'check' target and made it a dependency of 'dist'.
+            This should prevent embarrassing releases.
+    0.0.39
+        * anonymine_engine.py (game_engine.init_field2):
+            0.0.38 didn't work on Python 2.
+            The tempfile need to be opened in 'wx' mode on Python 2
+            and 'x' mode on Python 3.
+
+2016-01-29      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.38
+        * anonymine_engine.py, anonymine_fields.py, anonymine_solver.py:
+            root shouldn't be playing games.
+        * anonymine_engine.py (game_engine.init_field2):
+            Open files with 'x', and assert that they are not symlinks.
+            (To avoid mktemp(3)ish race-conditions.)
+
+2016-01-24      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.37
+        * anonymine_fields.py (hexagonal_field): Made the doc-string
+            a raw string.
+        * anonymine_solver.py:
+            - s/dame/same/.
+            - Added `solver.cumulated_levels_failure`.
+            - Completed the doc-strings.
+            - Added the 'T' level for the time it took.
+        * test.py: Added a doc-string and removed some crap.
+        * cursescfg: Fixed some forgotten comments. (0.0.36)
+    0.0.36
+        * cursescfg: Changed the foreground of 'background' to BLUE
+            to hide the remaining effects of BUG#3
+        * ChangeLog (0.0.28): No such file: engine.py
+        * anonymine_engine.py (game_engine): Removed init_field1.
+        * enginecfg: Removed the 'wait' key and wrapped long lines.
+        * anonymine.py (user_input), cursescfg: Key bindings:
+            Merged 'doc-moore' and 'doc-neumann' into 'doc-square'.
+        * anonymine.py: Fixed the fix for the fix for the interesting
+            NetBSD bug.  The game will now always exit with the
+            appropriate exit code.
+        * anonymine_fields.py:
+            - Why the hell would these classes need a '__hash__' method?
+            - Eliminated empty doc-strings from `hexagonal_field`.
+            - Wrote the empty doc-strings for `generic_field`.
+            - Wrote a main doc-string for the module.
+        * anonymine_engine.py:
+            Moved the first doc-string above the 'import' statements to
+            prevent displaying some boring FreeBSD license as doc-string.
+    0.0.35
+        * anonymine (curses_game) (__init__, input, travel):
+            It is now possible to move diagonally in the von Neumann mode.
+        * BUGS:
+            P(BUG#2) < 1/470289, mentioned version numbers.
+            BUG#5 from cursescfg
+        * Makefile.static (dist): Added -f to gzip.
+        * portability: Removed the "Terminals" section.
+
+2016-01-18      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.34
+        * anonymine_fields.py, anonymine_engine.py: Python 3 bugfixes:
+            Forgot to wrap map() in list() causing the game to crash
+            when it places the mines and of some reason integer arithmetic
+            became floating point in the fields module.
+    
+    0.0.33
+        * BUGS: BUG#4 was rejected. P(BUG#2) < 1/250250
+        * anonymine.py: The fix for for the interesting Python bug on
+            NetBSD causes exceptions to be raised when ^Cing the game
+            on Python 3.
+            Change:
+                - Python 3 on NetBSD will always exit 0.
+                - Python 3 on other systems that hang on exit will hang.
+                - Python 2 on other systems that hang on exit will exit
+                    appropriately.
+                - Will exit appropriately on systems that don't hang
+                    on exit.
+        * configure.py: Fixed the fix for the NetBSD related bug:
+            Don't raise SystemExit(1) on error, use os._exit() instead.
+        * anonymine_fields.py: Renewed the `generic_field` class as
+            _deref caused some confusion if used more than once.
+            Performance is about the same.
+        * anonymine_fields.py: Completed the doc-strings.
+        * INSTALL: Added some important notes about python symlinks.
+        *: New file: GOALS.
+
+2016-01-13      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.32
+        * Makefile.static: Commented out the $(PRE_INSTALL), $(NORMAL_INSTALL)
+            and $(POST_INSTALL) lines as they caused trouble on NetBSD and
+            OpenBSD.
+        * cursescfg (curses-output/free): Create visual difference between
+            free cells and background when color is disabled.
+        * configure.py, anonymine: Use os._exit(0) at the end of all "running"
+            code to work around an interesting Python bug on NetBSD.
+        * BUGS: Removed #4 (0.0.30), added #4 (Not finding Python 3 on
+            Open- and NetBSD.)
+            Update status on BUG#2. P(bug) < 1/103697
+        * configure.py:
+            Added $(prefix) as a variable to print in verbose mode.
+    0.0.31
+        * Makefile.static, configure.py, install-cfg: Try to use
+            /usr/ucb/install when available for compatibility with
+            openindiana and probably other Solares.
+        * anonymine.py: Allow `curses.curs_set(0)` to fail for compatibility
+            with Minix 3.
+        * configure.py: Change $(prefix) to something appropriate.
+        * INSTALL, configure.py: Implement a -w option to use the old/wrong
+            prefix.
+
+2016-01-12      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.30
+        * portability:
+            Added openindiana as problematic.
+            Added PyPy as problematic.
+            Added a list of untested, but important, platforms.
+        * BUGS:
+            Added a bug#4 which occurs on Minix 3.3.
+    0.0.29
+        * Makefile.static (overwrite-cfg): Bugfix: initcfg to enginecfg.
+            `grep initcfg -- ./*` confirms that this bug is finally solved.
+        *: Introduced crapfile 'LICENSE'.
+        * BUGS: Made a small correction to BUG#3 and added defined "since"
+            as >=77818 fields.
+        * anonymine_solver.py: Removed the "-1 frequency of diffifculty"
+            profiling code.
+        * anonymine_fields.py (generic_field):
+            Added a description of the coordinate system to the doc-string.
+        * portability: Added OpenSUSE as properly behaving, removed Debian 8
+            as problematic. Learned the alphabet.
+    0.0.28
+        * anonymine_engine.py (game_engine):
+            * (init_field, init_field1, init_field2):
+                `init_field` now takes care of the traditional/stupid mode.
+                And the method of generating guessless minefields has been
+                improved.
+        * anonymine_engine.py (game_engine.place_mines):
+            REMOVED as it is no longer needed.
+        * enginecfg:
+            Reconfigured to work better with init_field2.
+        * INSTALL:
+            Bugfix "-i initcfg" to "-e enginecfg".
+
+2016-01-09      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.27
+        * BUGS, portability:
+        * anonymine.py (curses_game.__init__):
+        * anonymine.py (curses_game.input):
+        * anonymine.py (curses_game.output):
+            Fixed a platform specific bug. (#3).
+
+2016-01-08      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.26
+        * anonymine_solver.py (solver.number_neighbours):
+            Only add cells to the list that are not already in it.
+            Makes the solver 4x as fast.
+        * anonymine_solver.py, anonymine_fields.py:
+            Closer inspection of the caching of neighbours gives a speed
+            multiplier of 2.5.
+            The solver is now approx 10x as fast as in version 0.0.23.
+    0.0.25
+        * anonymine_solver.py (solver.rule9bf): The bug found at 0.0.24
+            might have been found.  It was checking if a free cell was a
+            neighbour to EACH unsolved cell rather than to ANY unsolved
+            cell.
+            I will run a bugcatcher to verify that the bug that may or may
+            not exist, is very improbable to occur.
+
+2016-01-07      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.24
+        * anonymine_fields.py (generic_field):
+            Cache the lists returned by `generic_field.get_neighbours`.
+            Seems to be 2x as fast.
+        * BUGS:
+            While profiling, a bug was found: the solver made a mistake
+
+2016-01-06      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.23
+        * configure.py (getargs): Now works on Python 2.5.5 (which is too
+            old for this game).
+        * configure.py, INSTALL: Allow three flags/short options:
+            -f force
+            -v verbose
+    0.0.22
+        * configure.py, configure, INSTALL: Installation is more customisable
+            with directory variables now being supported by the configure.py
+            script.  srcdir, builddir, DESTDIR, prefix, bindir, gamesdir,
+            libdir, EXECUTABLES, MODULES, MODULES_OTHERVER
+        * configure.py: Try to get this to work on Python 2.5.
+        * Makefile.static: Have 'check-install-cfg' as a dependency of
+            'install' in the hope of that this will prevent installing
+            if the pre-existing configuration files are incompatible.
+        * Makefile.static: Cosmetic changes at the top comments.
+        * Makefile.static: Renamed 'to-where' to 'print-destinations'.
+        * Makefile.static (dist): cd into $(builddir) and use relative paths
+            when making the tar.
+
+2016-01-06      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.21
+        * Makefile.static: Silence is golden. Use more variables.
+            New target: uninstall
+            New target: to-where
+            Made the dist target work on FreeBSD.
+2016-01-05      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.20
+        * anonymine_engine.py (game_engine.__init__): Code clean up.
+        * anonymine_engine.py: Wrote some doc-strings.
+        * anonymine.py: Removed `maindoc`.
+        * anonymine_engine.py (game_engine): `interface.anykey_cont` is no
+            longer required.  It is still used if it exists.
+        * Makefile.static: Don't rename /etc/anonymine/initcfg to
+            /etc/anonymine/enginecfg as this will cause confusion when
+            combined with $(DESTDIR) and is not needed.
+        * Makefile.static: $(PRE_INSTALL) and $(NORMAL_INSTALL) have been
+            inserted.
+    0.0.19
+        * ChangeLog (0.0.17): Oops: It was modified, but I forgot to save.
+        * : "initcfg" has been renamed to "enginecfg" to allow for more
+            directives in the future.
+        * anonymine.py: Global replace "initcfg" with "enginecfg".
+        * anonymine.py (play_game), anonymine_engine.py (game_engine.__init__):
+            Send the configuration file's path as a positional argument
+            instead.
+        * anonymine.py (arg_input): -i to -e.
+        * anonymine.py (play_game): Corrected the doc-string's description
+            of enginecfg. (Previously specific to field initialization.)
+        * Makefile.static: Attempt to rename a pre-existing "initcfg" to
+            "enginecfg"
+        * anonymine.py (arg_input): Improved help text for the -e and -c
+            options.
+
+2016-01-04      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.18
+        * ChangeLog (0.0.17): Oops: It was modified, but I forgot to save.
+    0.0.17
+        * anonymine.py (curses_game.leave): Set the SIGWINCH handler to
+            SIG_IGN, to fix a bug.  (Documented in the source.)
+        * test.py: Added function `bug1` to demonstrate the bug that has been
+            fixed.
+        * Makefile.static: New files: "BUGS" and "portability".
+        * anonymine.py:
+            * The "time" module wasn't used.
+            * "traceback" WILL exist; no need for try/except.
+            * "signal" WILL exist; no need for try/except.
+            * The warning about "argparse" not being available was hard to
+              read as it was on the top of the screen.
+    0.0.16
+        * ChangeLog (0.0.15): str.format is new in Python 2.6, no lower version
+            possible.
+        * cursescfg: A_BLINK was annoying on the cursor for square fields.
+        * anonymine.py (ask): Quit immediately on ^C, don't ask.
+        * configure.py: Check dependencies.
+        * INSTALL: Mention dependencies.
+        * Makefile.static: Print out MODULES_OTHERVER on make install.
+        * Makefile.static: Changed $(DEST) to $(DESTDIR) in many places.
+
+2016-01-03      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.15
+        * anonymine.py, anonymine_engine.py, anonymine_fields.py, configure.py:
+        * install-cfg, initcfg:
+            Put an index in all '{}'s in all format strings to be compatible
+            with Python 2.6.
+        * anonymine.py: Allow the modules "argparse" and "traceback" to be
+            missing.
+        * anonymine.py (arg_input): Implemented dummy mode when argparse
+            is unavailable.
+    0.0.14
+        * anonymine.py (curses_game.__init__): Minimal allowed resolution is
+            now 10x8 for hexagonal fields.
+        * anonymine.py: Gave the doc-strings a summary line. (PEP 0257)
+        * install-cfg: BUGFIX: Forgot to import os.
+    0.0.13
+        * anonymine.py (curses_game): Extended the main doc-string.
+        * anonymine.py, anonymine.py (maindoc): Added a doc-string for the
+            whole module, currently empty.
+        * anonymine.py (ask, convert_param): Wrote the doc-strings.
+        * anonymine.py (convert_params): Renamed to convert_param as it takes
+            one parameter.
+        * anonymine.py (convert_param):
+            * Allow '4', '6', '8' and 'hexagonal' as `s` when
+                paramtype == "gametype".
+            * Moved the 'yesno' block to the top as it is probably the most
+                usable for re-use.
+            * Improved the Easter egg for paramtype=='dimension'.
+    0.0.12
+        * anonymine.py (curses_game): Wrote the remaining doc-strings.
+        * anonymine.py (curses_game.print_hex, curses_game.print_square):
+            The area mentioned in the doc-strings accidentally included the
+            bottom line (currently used for the flags left text).
+        * anonymine.py (curses_game): Replaced `self.coordinate` with
+            `self.cursor` to remove some confusion.
+        * anonymine.py (curses_game.print_hex): Made the doc-string a
+            raw string due to the backslashes.
+        * ChangeLog (0.0.9): `convert_params` did already exist, the new thing
+            was 'reverse-minecount'.
+    0.0.11
+        * anonymine.py (curses_game): Wrote some doc-strings.
+        * anonymine.py: Fixed the "printing of traceback without fucking
+            up terminal".
+            Previous behaviour: complain about curses.endwin() before
+            initialization.
+
+2016-01-03      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.10
+        * anonymine.py (arg_input): Changed "epilog" to "description" in the
+            call to `argparse.ArgumentParser` as it would be more appropriate.
+        * anonymine.py (play_game, arg_input, main): Clearer handling of
+            the configuration filepath parameters.
+        * anonymine.py (main, play_game, user_input, arg_input):
+            Created the doc-strings.
+    0.0.9
+        * anonymine.py (game_engine), anonymine_engine.py: Moved the
+            game engine class into its own module.
+        * anonymine.py (arg_input): Wrote epilog added default markers.
+        * anonymine.py (curses_game): Not inherited from the game_engine class.
+        * anonymine.py: Added global GAME_FILENAME to clean up some more code.
+        * anonymine.py (user_input, convert_params): Added 'reverse-minecount'
+            to the function `convert_params` to fix bug in `user_input`.
+            The default number of mines is now the actual default (at the time
+            20%) rather than the hard coded 16%.
+2016-01-02      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.8
+        * configure.py, Makefile.static: The modules will now be installed
+            for both versions of Python.
+        * Makefile.static: Added quotation to prevent disaster if someone
+            puts spaces in srcdir, builddir or DESTDIR.
+    0.0.7
+        * anonymine_solver.py, anonymine_fields.py, anonymine.py: Wrapped each
+            call to `filter` in a list, due to incompatibilities with Python 3.
+            run2, run6 and run9 in test.py now works in Py3.  Further resizing
+            tests should be done.  Modules only available in the default
+            version of Python.
+    0.0.6
+        * anonymine.py (user_input), cursescfg: Provide in-game documentation
+            on the key bindings.
+        * Makefile.static (install):
+            Moved the configuration installation lines higher up to prevent
+            installing something that can't use the available configuration.
+    0.0.5
+        * cursescfg: Various improvements including compacting, documenting,
+            notifying about potential future incompatibility and rethinking
+            hexagonal steering.
+    0.0.4
+        * anonymine.py (curses_game.message): Bugfix: messages will now
+            be split into many lines if it doesn't fit in one.
+            Previous behaviour: crash.
+        * anonymine.py (curses_game.__init__): Limit screen sizes to a minimum
+            of 7 columns and 4 rows.
+        * anonymine.py (curses_game.output): Always decrease the available
+            height, not only when the flags left message doesn't fit.
+            Seems to fix a resizing bug that traces to curses_game.print_char.
+    0.0.3
+        * Makefile, Makefile.static, configure, configure.py:
+            A simple configure script has been written.
+            Manual modification of the Makefile no longer needed.
+        * INSTALL: Updated to match the current installation procedure.
+    0.0.2
+        * Makefile, install-cfg: Created a small python script to prevent
+            overwriting potentially modified configuration files.
+            Added the rule "overwrite-cfg" to the Makefile.
+        * Makefile: @ed out all lines; added echo(1)es to tell what is being
+            done.
+        * INSTALL: Mentioning the install-cfg script and the overwrite-cfg
+            rule.
+    0.0.1
+        * Makefile: Avoiding the use of `install -t` as it doesn't work on
+            at least FreeBSD.
+
+2016-01-02      Oskar Skog      <https://oskog97.com/#contact>
+    0.0.0
+        * Initial release.

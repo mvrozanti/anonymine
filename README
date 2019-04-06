@@ -1,0 +1,123 @@
+Anonymine is a curses mode (text based) minesweeper that checks if the fields
+actually are solvable without guessing and has a few other features.
+
+Apart from being solvable without guessing, Anonymine has a few other features:
+    - Three different field types
+        - von Neumann (4 neighbors)
+        - hexagonal (6 neighbors)
+        - traditional (8 neighbors)
+    - There's a highscores table for the losers too.
+    - The anonymine_solver module can also be used to "measure the difficulty"
+      of a field.
+
+You can also try it over SSH as play@anonymine-demo.oskog97.com port 2222.
+(No password)
+
+You can find screenshots and more at https://oskog97.com/projects/anonymine/
+
+
+See also
+========
+
+    - INSTALL for installation instructions. (./configure; make; make install)
+      (There may exist platform specific versions of INSTALL.)
+    - Windows: Read INSTALL.Windows.txt or download
+      https://gitlab.com/oskog97/anonymine-windows
+
+
+Software & hardware requirements
+================================
+
+    Required software
+        - Python 2.6, 2.7 or 3.x
+        - The "curses" module (Python)
+        - The "argparse" module (Python) or a unix-like operating system [*1,2]
+    
+    *1 The argparse module is needed for Anonymine to take commandline options.
+    The configuration files can be specified with the -e and -c command line
+    options to override the default locations which happen to be unix paths.
+    
+    *2 Note that Python 2.6, 3.0 and 3.1 are not expected to have the
+    module "argparse".
+    
+    Software recommendations
+        - unix-like operating system or compatibility layer. fork(2) is
+          required for utilizing multiple CPU cores.
+        - The less(1) pager, for displaying the highscores table.
+        - PyPy (It's faster than CPython, the more common Python interpreter.)
+    
+    Hardware requirements
+        - Fast CPU and fast RAM (Multiple cores can be used by Anonymine.)
+        - Fan for cooling the CPU
+        - Disk:
+            - 2 MB for tarball downloads
+            - 8 MB for git clones
+        - RAM usage:
+            - Less than 16 MiB plus 24 MiB per logical CPU (core) for CPython
+            - Less than 96 MiB plus 128 MiB per logical CPU (core) for PyPy
+
+
+Tested platforms
+================
+
+
+    Python version
+    ==============
+    
+        2.6 has been tested, but that was a long time ago. Anonymine version
+        0.2.30 should work fine.
+        
+        Python 2.7 and 3.x are both being actively tested, there should not be
+        any issues whatsoever.
+        
+        It works with both CPython and PyPy.  PyPy3 is being actively tested.
+    
+    
+    Operating system
+    ================
+    
+        unix-like
+        ---------
+        
+            Should work flawlessly on most GNU(/Linux) distributions.
+            
+            MacOS needs more testing.  Especially to make sure the installation
+            goes smoothly.
+        
+            Previous versions have been tested to work on various GNU/Linux
+            distributions, FreeBSD, OpenBSD, NetBSD, DragonflyBSD, Minix 3
+            and OpenIndiana.
+            
+            It also runs on Haiku.  It does not install, read INSTALL.Haiku.
+        
+        
+        Windows
+        -------
+        
+            Versions before 0.5.6 will not work on Windows, but newer versions
+            do provided that you have installed windows-curses from PyPI. This
+            probably only works with CPython.  Initializing minefields take
+            longer as there is no `os.fork`.
+            
+            0.5.6 does not have an automatic installer, read the instructions
+            in INSTALL.Windows.txt.
+        
+            There is also a version that runs on Cygwin avaiable on
+            <https://gitlab.com/oskog97/anonymine-windows>.  It's faster but
+            takes a while to install and Cygwin takes up half a gigabyte of
+            storage. It also has a few issues with shortcuts and installing
+            for all users.
+        
+
+Goals
+=====
+
+    Version Change
+    ------- ------
+    0.2     Performance improvements, no nasty calibration of enginecfg
+    0.3     High-scores
+    0.4     Meta file clean ups (eg. README)
+    0.5     Mouse support
+    0.6     Windows installer that is not a PITA
+    
+

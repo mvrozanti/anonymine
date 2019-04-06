@@ -1,0 +1,24 @@
+#!/usr/bin/python
+#@not-modified@
+# Remove the above line if this file has been modified.
+# If you don't, this file will be overwritten.
+
+# Autogeneration of this file failed, this is a fallback version!
+
+{
+    'init-field': {
+        'procs':        1,      # Default is to not overload.
+        'filename':     '/tmp/mines.{0}',
+        'sec-maxtime':  900,    # Crash if initialization takes more
+                                # than one and a half minute.
+        'sec-maxarea':  10000,  # Crash if a huge field is requested.
+    },
+    'hiscores': {
+        'file':         '/var/games/anonymine',
+        'maxsize':      524288,
+        'entries':      16,
+        'use-user':     True,
+        'use-nick':     True,
+        'nick-maxlen':  100,
+    },
+}

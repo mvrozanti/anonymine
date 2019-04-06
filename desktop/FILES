@@ -1,0 +1,16 @@
+File                    Platform                Description
+----                    --------                -----------
+
+FILES                   info                    This file
+Info.plist.py           Mac OS X                --
+README                  info                    It's an order!
+anonymine-16x16.png     "Linux", Mac OS X       Small icon
+anonymine-16x16.xcf     src                     Small icon source
+anonymine-256x256.png   "Linux", Mac OS X       Old Mac OS X icon
+anonymine-256x256.xcf   src                     Old Mac OS X icon source
+anonymine-32x32.png     "Linux", Mac OS X       Medium icon
+anonymine-32x32.xcf     src                     Medium icon source
+anonymine-64x64.png     "Linux", Mac OS X       Large icon
+anonymine-64x64.xcf     src                     Large icon source
+desktop.sh              "Linux"                 Generate anonymine.desktop
+icon.icns.py            Mac OS X                Puts all PNGs in a Mac OS X icon
