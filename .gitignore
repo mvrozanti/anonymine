@@ -1,0 +1,11 @@
+Makefile
+Makefile.vars
+__pycache__/*
+__pycache__/*
+__pycache__/*
+anonymine
+anonymine.desktop
+enginecfg.out
+mkenginecfg.py
+reconfigure
+symlinks

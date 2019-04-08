@@ -191,7 +191,7 @@
        #                         foreground           attributes
        #key                character        background
         'text':           (None, "BLACK",   "WHITE",  curses.A_NORMAL),
-        'flag':           ('F',  "GREEN",   "BLACK",  curses.A_REVERSE|curses.A_DIM),
+        'flag':           ('⚐',  "WHITE",   "BLACK",  curses.A_NORMAL|curses.A_BOLD),
         'free':           ('.',  "BLACK",   "BLACK",  curses.A_NORMAL),
         'attention':      ('.',  "WHITE",   "BLACK",  curses.A_REVERSE|curses.A_BOLD|curses.A_BLINK),
         '1:square':       ('1',  "YELLOW",  "BLACK",  curses.A_BOLD),
@@ -207,7 +207,7 @@
         'cursor-l':       ('>',  "WHITE",   "BLACK",  curses.A_BOLD),
         'cursor-r':       ('<',  "WHITE",   "BLACK",  curses.A_BOLD),
         'grid':           (' ',  "WHITE",   "BLACK",  curses.A_NORMAL),
-        'background':     (None, "BLACK",   "BLUE",   curses.A_NORMAL),
+        'background':     (None, "BLACK",   "BLACK",   curses.A_NORMAL),
         'flag:hex':       ('F',  "RED",     "BLACK",  curses.A_REVERSE),
         'free:hex':       ('.',  "RED",     "RED",    curses.A_NORMAL),
         '1:hex':          ('1',  "WHITE",   "RED",    curses.A_BOLD),

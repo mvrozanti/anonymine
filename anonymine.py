@@ -50,6 +50,7 @@ import errno
 import locale
 import signal
 import sys
+import code
 import traceback        # Not required.
 
 # Let piping to less(1) fail on Minix.
@@ -355,16 +356,19 @@ class curses_game():
             self.use_color = True
             # TODO: Check that enough pairs are available.
             curses.start_color()
+            curses.use_default_colors()
             for key in self.cfg['curses-output']:
                 value = self.cfg['curses-output'][key]
                 ch, foreground, background, attr = value
                 # Only add new pairs.
                 if (foreground, background) not in self.color_pairs:
                     self.color_pairs.append((foreground, background))
+                    # curses.endwin()
+                    # code.interact(local=globals().update(locals()) or globals())
                     curses.init_pair(
                         len(self.color_pairs),
                         eval('curses.COLOR_' + foreground),
-                        eval('curses.COLOR_' + background)
+                        -1 if background == 'BLACK' else eval('curses.COLOR_' + background)
                     )
         else:
             self.use_color = False
@@ -1343,52 +1347,57 @@ def user_input(default, cursescfg_path):
     '''
     parameters = {}
     booldefault = {True: 'Yes', False: 'No'}
-    parameters['width'] = ask(
-        'Width of the playing field',
-        'dimension',
-        default['width']
-    )
-    parameters['height'] = ask(
-        'Height of the playing field',
-        'dimension',
-        default['height']
-    )
+    parameters['width'] = int(default['width']/2)
+    # parameters['width'] = ask(
+    #     'Width of the playing field',
+    #     'dimension',
+    #     default['width']
+    # )
+    parameters['height'] = int(default['height']/2)
+    # parameters['height'] = ask(
+    #     'Height of the playing field',
+    #     'dimension',
+    #     default['height']
+    # )
     # MUST ask for dimensions before for the # of mines.
-    parameters['mines'] = ask(
-        'Mines: number or percent% (It gets very slow after 25-ish-%)',
-        'minecount',
-        convert_param('reverse-minecount', default['mines'])
-    )
+    parameters['mines'] = default['mines']
+    # parameters['mines'] = ask(
+    #     'Mines: number or percent% (It gets very slow after 25-ish-%)',
+    #     'minecount',
+    #     convert_param('reverse-minecount', default['mines'])
+    # )
     parameters['gametype'] = ask(
         'A: Neumann, B: Hexagonal or C: Moore',
         'gametype',
         default['gametype']
     )
-    parameters['guessless'] = ask(
-        '100% solvable field (no guessing required)',
-        'yesno',
-        booldefault[default['guessless']]
-    )
+    parameters['guessless'] = booldefault[default['guessless']]
+    # parameters['guessless'] = ask(
+    #     '100% solvable field (no guessing required)',
+    #     'yesno',
+    #     booldefault[default['guessless']]
+    # )
     # MUST ask for guessless mode before polite mode.
-    if parameters['guessless']:
-        parameters['insult'] = not ask(
-            'Polite mode?',
-            'yesno',
-            booldefault[not default['guessless']]
-        )
+    parameters['insult'] = not booldefault[not default['guessless']]
+    # if parameters['guessless']:
+    #     parameters['insult'] = not ask(
+    #         'Polite mode?',
+    #         'yesno',
+    #         booldefault[not default['guessless']]
+    #     )
     # Ask if the user wants to know the key bindings.
-    if ask('Show key bindings?', 'yesno', 'No'):
-        cursescfg = eval(open(cursescfg_path).read())
-        output(sys.stdout,cursescfg['pre-doc'])
-        if parameters['gametype'] == 'hex':
-            output(sys.stdout, cursescfg['doc-hex'])
-        else:
-            output(sys.stdout, cursescfg['doc-square'])
-        output(sys.stdout,
-            "\nPressing an unrecognised key will refresh the screen.\n"
-            "^C (Ctrl-c) to quit a game or the game.\n\n"
-        )
-        ask('Press enter to continue...', 'str', '')
+    # if ask('Show key bindings?', 'yesno', 'No'):
+    #     cursescfg = eval(open(cursescfg_path).read())
+    #     output(sys.stdout,cursescfg['pre-doc'])
+    #     if parameters['gametype'] == 'hex':
+    #         output(sys.stdout, cursescfg['doc-hex'])
+    #     else:
+    #         output(sys.stdout, cursescfg['doc-square'])
+    #     output(sys.stdout,
+    #         "\nPressing an unrecognised key will refresh the screen.\n"
+    #         "^C (Ctrl-c) to quit a game or the game.\n\n"
+    #     )
+    #     ask('Press enter to continue...', 'str', '')
     return parameters
 
 def highscores_add_entry(title, prompt):
