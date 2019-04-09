@@ -1,7 +1,4 @@
-Makefile
-Makefile.vars
-__pycache__/*
-__pycache__/*
+Makefile*
 __pycache__/*
 anonymine
 anonymine.desktop
