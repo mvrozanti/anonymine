@@ -1,4 +1,5 @@
-Makefile*
+Makefile
+Makefile.vars
 __pycache__/*
 anonymine
 anonymine.desktop
